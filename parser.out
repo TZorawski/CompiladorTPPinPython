@@ -1,104 +1,2788 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
-Unused terminals:
-
-    DCOLCHE
-    MAIORIGUAL
-    FLUTUANTE
-    DESIGUAL
-    NUM_CIENTIFICO
-    DOISPONTOS
-    IGUAL
-    ADICAO
-    ECOLCHE
-    VIRGULA
-    ENTAO
-    NUM_FLUTUANTE
-    LEIA
-    NUM_INTEIRO
-    INTEIRO
-    SE
-    EPAREN
-    RETORNA
-    MULTIPLICACAO
-    ATE
-    DPAREN
-    SUBTRACAO
-    DIVISAO
-    REPITA
-    ELOGICO
-    ESCREVA
-    MAIORQ
-    MENORIGUAL
-    MENORQ
-    FIM
-    SENAO
-    NEGACAO
-    OULOGICO
-    ATRIBUICAO
-    ID
-
 Grammar
 
-Rule 0     S' -> vazio
-Rule 1     vazio -> <empty>
+Rule 0     S' -> programa
+Rule 1     programa -> lista_declaracoes
+Rule 2     lista_declaracoes -> lista_declaracoes declaracao
+Rule 3     lista_declaracoes -> declaracao
+Rule 4     declaracao -> declaracao_variaveis
+Rule 5     declaracao -> inicializacao_variaveis
+Rule 6     declaracao -> declaracao_funcao
+Rule 7     declaracao_variaveis -> tipo DOISPONTOS lista_variaveis
+Rule 8     inicializacao_variaveis -> atribuicao
+Rule 9     lista_variaveis -> lista_variaveis , var
+Rule 10    lista_variaveis -> var
+Rule 11    var -> ID
+Rule 12    var -> ID indice
+Rule 13    indice -> indice ECOLCHE expressao DCOLCHE
+Rule 14    indice -> ECOLCHE expressao DCOLCHE
+Rule 15    tipo -> INTEIRO
+Rule 16    tipo -> FLUTUANTE
+Rule 17    declaracao_funcao -> tipo cabecalho
+Rule 18    declaracao_funcao -> cabecalho
+Rule 19    cabecalho -> ID EPAREN lista_parametros DPAREN corpo FIM
+Rule 20    lista_parametros -> lista_parametros VIRGULA parametro
+Rule 21    lista_parametros -> parametro
+Rule 22    lista_parametros -> vazio
+Rule 23    parametro -> tipo DOISPONTOS ID
+Rule 24    parametro -> parametro ECOLCHE DCOLCHE
+Rule 25    corpo -> corpo acao
+Rule 26    corpo -> vazio
+Rule 27    acao -> expressao
+Rule 28    acao -> declaracao_variaveis
+Rule 29    acao -> SE
+Rule 30    acao -> REPITA
+Rule 31    acao -> LEIA
+Rule 32    acao -> ESCREVA
+Rule 33    acao -> RETORNA
+Rule 34    acao -> error
+Rule 35    se -> SE expressao ENTAO corpo FIM
+Rule 36    se -> SE expressao ENTAO corpo SENAO corpo FIM
+Rule 37    repita -> REPITA corpo ATE expressao
+Rule 38    atribuicao -> var ATRIBUICAO expressao
+Rule 39    leia -> LEIA EPAREN var DPAREN
+Rule 40    escreva -> ESCREVA EPAREN expressao DPAREN
+Rule 41    retorna -> RETORNA EPAREN expressao DPAREN
+Rule 42    expressao -> expressao_logica
+Rule 43    expressao -> atribuicao
+Rule 44    expressao_logica -> expressao_simples
+Rule 45    expressao_logica -> expressao_logica operador_logico expressao_simples
+Rule 46    expressao_simples -> expressao_aditiva
+Rule 47    expressao_simples -> expressao_simples operador_relacional expressao_aditiva
+Rule 48    expressao_aditiva -> expressao_multiplicativa
+Rule 49    expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa
+Rule 50    expressao_multiplicativa -> expressao_unaria
+Rule 51    expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria
+Rule 52    expressao_unaria -> fator
+Rule 53    expressao_unaria -> operador_soma fator
+Rule 54    expressao_unaria -> operador_negacao fator
+Rule 55    operador_relacional -> MENORQ
+Rule 56    operador_relacional -> MAIORQ
+Rule 57    operador_relacional -> IGUAL
+Rule 58    operador_relacional -> DESIGUAL
+Rule 59    operador_relacional -> MENORIGUAL
+Rule 60    operador_relacional -> MAIORIGUAL
+Rule 61    operador_soma -> ADICAO
+Rule 62    operador_soma -> SUBTRACAO
+Rule 63    operador_logico -> ELOGICO
+Rule 64    operador_logico -> OULOGICO
+Rule 65    operador_negacao -> NEGACAO
+Rule 66    operador_multiplicacao -> MULTIPLICACAO
+Rule 67    operador_multiplicacao -> DIVISAO
+Rule 68    fator -> EPAREN expressao DPAREN
+Rule 69    fator -> var
+Rule 70    fator -> chamada_funcao
+Rule 71    fator -> numero
+Rule 72    numero -> NUM_INTEIRO
+Rule 73    numero -> NUM_FLUTUANTE
+Rule 74    numero -> NUM_CIENTIFICO
+Rule 75    chamada_funcao -> ID EPAREN lista_argumentos DPAREN
+Rule 76    lista_argumentos -> lista_argumentos VIRGULA expressao
+Rule 77    lista_argumentos -> expressao
+Rule 78    lista_argumentos -> vazio
+Rule 79    vazio -> <empty>
 
 Terminals, with rules where they appear
 
-ADICAO               : 
-ATE                  : 
-ATRIBUICAO           : 
-DCOLCHE              : 
-DESIGUAL             : 
-DIVISAO              : 
-DOISPONTOS           : 
-DPAREN               : 
-ECOLCHE              : 
-ELOGICO              : 
-ENTAO                : 
-EPAREN               : 
-ESCREVA              : 
-FIM                  : 
-FLUTUANTE            : 
-ID                   : 
-IGUAL                : 
-INTEIRO              : 
-LEIA                 : 
-MAIORIGUAL           : 
-MAIORQ               : 
-MENORIGUAL           : 
-MENORQ               : 
-MULTIPLICACAO        : 
-NEGACAO              : 
-NUM_CIENTIFICO       : 
-NUM_FLUTUANTE        : 
-NUM_INTEIRO          : 
-OULOGICO             : 
-REPITA               : 
-RETORNA              : 
-SE                   : 
-SENAO                : 
-SUBTRACAO            : 
-VIRGULA              : 
-error                : 
+,                    : 9
+ADICAO               : 61
+ATE                  : 37
+ATRIBUICAO           : 38
+DCOLCHE              : 13 14 24
+DESIGUAL             : 58
+DIVISAO              : 67
+DOISPONTOS           : 7 23
+DPAREN               : 19 39 40 41 68 75
+ECOLCHE              : 13 14 24
+ELOGICO              : 63
+ENTAO                : 35 36
+EPAREN               : 19 39 40 41 68 75
+ESCREVA              : 32 40
+FIM                  : 19 35 36
+FLUTUANTE            : 16
+ID                   : 11 12 19 23 75
+IGUAL                : 57
+INTEIRO              : 15
+LEIA                 : 31 39
+MAIORIGUAL           : 60
+MAIORQ               : 56
+MENORIGUAL           : 59
+MENORQ               : 55
+MULTIPLICACAO        : 66
+NEGACAO              : 65
+NUM_CIENTIFICO       : 74
+NUM_FLUTUANTE        : 73
+NUM_INTEIRO          : 72
+OULOGICO             : 64
+REPITA               : 30 37
+RETORNA              : 33 41
+SE                   : 29 35 36
+SENAO                : 36
+SUBTRACAO            : 62
+VIRGULA              : 20 76
+error                : 34
 
 Nonterminals, with rules where they appear
 
-vazio                : 0
+acao                 : 25
+atribuicao           : 8 43
+cabecalho            : 17 18
+chamada_funcao       : 70
+corpo                : 19 25 35 36 36 37
+declaracao           : 2 3
+declaracao_funcao    : 6
+declaracao_variaveis : 4 28
+escreva              : 
+expressao            : 13 14 27 35 36 37 38 40 41 68 76 77
+expressao_aditiva    : 46 47 49
+expressao_logica     : 42 45
+expressao_multiplicativa : 48 49 51
+expressao_simples    : 44 45 47
+expressao_unaria     : 50 51
+fator                : 52 53 54
+indice               : 12 13
+inicializacao_variaveis : 5
+leia                 : 
+lista_argumentos     : 75 76
+lista_declaracoes    : 1 2
+lista_parametros     : 19 20
+lista_variaveis      : 7 9
+numero               : 71
+operador_logico      : 45
+operador_multiplicacao : 51
+operador_negacao     : 54
+operador_relacional  : 47
+operador_soma        : 49 53
+parametro            : 20 21 24
+programa             : 0
+repita               : 
+retorna              : 
+se                   : 
+tipo                 : 7 17 23
+var                  : 9 10 38 39 69
+vazio                : 22 26 78
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . vazio
-    (1) vazio -> .
+    (0) S' -> . programa
+    (1) programa -> . lista_declaracoes
+    (2) lista_declaracoes -> . lista_declaracoes declaracao
+    (3) lista_declaracoes -> . declaracao
+    (4) declaracao -> . declaracao_variaveis
+    (5) declaracao -> . inicializacao_variaveis
+    (6) declaracao -> . declaracao_funcao
+    (7) declaracao_variaveis -> . tipo DOISPONTOS lista_variaveis
+    (8) inicializacao_variaveis -> . atribuicao
+    (17) declaracao_funcao -> . tipo cabecalho
+    (18) declaracao_funcao -> . cabecalho
+    (15) tipo -> . INTEIRO
+    (16) tipo -> . FLUTUANTE
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (19) cabecalho -> . ID EPAREN lista_parametros DPAREN corpo FIM
+    (11) var -> . ID
+    (12) var -> . ID indice
 
-    $end            reduce using rule 1 (vazio -> .)
+    INTEIRO         shift and go to state 4
+    FLUTUANTE       shift and go to state 13
+    ID              shift and go to state 11
 
-    vazio                          shift and go to state 1
+    programa                       shift and go to state 8
+    declaracao_variaveis           shift and go to state 9
+    lista_declaracoes              shift and go to state 1
+    inicializacao_variaveis        shift and go to state 10
+    cabecalho                      shift and go to state 3
+    atribuicao                     shift and go to state 2
+    tipo                           shift and go to state 7
+    declaracao_funcao              shift and go to state 12
+    var                            shift and go to state 5
+    declaracao                     shift and go to state 6
 
 state 1
 
-    (0) S' -> vazio .
+    (1) programa -> lista_declaracoes .
+    (2) lista_declaracoes -> lista_declaracoes . declaracao
+    (4) declaracao -> . declaracao_variaveis
+    (5) declaracao -> . inicializacao_variaveis
+    (6) declaracao -> . declaracao_funcao
+    (7) declaracao_variaveis -> . tipo DOISPONTOS lista_variaveis
+    (8) inicializacao_variaveis -> . atribuicao
+    (17) declaracao_funcao -> . tipo cabecalho
+    (18) declaracao_funcao -> . cabecalho
+    (15) tipo -> . INTEIRO
+    (16) tipo -> . FLUTUANTE
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (19) cabecalho -> . ID EPAREN lista_parametros DPAREN corpo FIM
+    (11) var -> . ID
+    (12) var -> . ID indice
+
+    $end            reduce using rule 1 (programa -> lista_declaracoes .)
+    INTEIRO         shift and go to state 4
+    FLUTUANTE       shift and go to state 13
+    ID              shift and go to state 11
+
+    declaracao                     shift and go to state 14
+    declaracao_variaveis           shift and go to state 9
+    inicializacao_variaveis        shift and go to state 10
+    cabecalho                      shift and go to state 3
+    atribuicao                     shift and go to state 2
+    tipo                           shift and go to state 7
+    declaracao_funcao              shift and go to state 12
+    var                            shift and go to state 5
+
+state 2
+
+    (8) inicializacao_variaveis -> atribuicao .
+
+    INTEIRO         reduce using rule 8 (inicializacao_variaveis -> atribuicao .)
+    FLUTUANTE       reduce using rule 8 (inicializacao_variaveis -> atribuicao .)
+    ID              reduce using rule 8 (inicializacao_variaveis -> atribuicao .)
+    $end            reduce using rule 8 (inicializacao_variaveis -> atribuicao .)
 
 
+state 3
+
+    (18) declaracao_funcao -> cabecalho .
+
+    INTEIRO         reduce using rule 18 (declaracao_funcao -> cabecalho .)
+    FLUTUANTE       reduce using rule 18 (declaracao_funcao -> cabecalho .)
+    ID              reduce using rule 18 (declaracao_funcao -> cabecalho .)
+    $end            reduce using rule 18 (declaracao_funcao -> cabecalho .)
+
+
+state 4
+
+    (15) tipo -> INTEIRO .
+
+    DOISPONTOS      reduce using rule 15 (tipo -> INTEIRO .)
+    ID              reduce using rule 15 (tipo -> INTEIRO .)
+
+
+state 5
+
+    (38) atribuicao -> var . ATRIBUICAO expressao
+
+    ATRIBUICAO      shift and go to state 15
+
+
+state 6
+
+    (3) lista_declaracoes -> declaracao .
+
+    INTEIRO         reduce using rule 3 (lista_declaracoes -> declaracao .)
+    FLUTUANTE       reduce using rule 3 (lista_declaracoes -> declaracao .)
+    ID              reduce using rule 3 (lista_declaracoes -> declaracao .)
+    $end            reduce using rule 3 (lista_declaracoes -> declaracao .)
+
+
+state 7
+
+    (7) declaracao_variaveis -> tipo . DOISPONTOS lista_variaveis
+    (17) declaracao_funcao -> tipo . cabecalho
+    (19) cabecalho -> . ID EPAREN lista_parametros DPAREN corpo FIM
+
+    DOISPONTOS      shift and go to state 18
+    ID              shift and go to state 16
+
+    cabecalho                      shift and go to state 17
+
+state 8
+
+    (0) S' -> programa .
+
+
+
+state 9
+
+    (4) declaracao -> declaracao_variaveis .
+
+    INTEIRO         reduce using rule 4 (declaracao -> declaracao_variaveis .)
+    FLUTUANTE       reduce using rule 4 (declaracao -> declaracao_variaveis .)
+    ID              reduce using rule 4 (declaracao -> declaracao_variaveis .)
+    $end            reduce using rule 4 (declaracao -> declaracao_variaveis .)
+
+
+state 10
+
+    (5) declaracao -> inicializacao_variaveis .
+
+    INTEIRO         reduce using rule 5 (declaracao -> inicializacao_variaveis .)
+    FLUTUANTE       reduce using rule 5 (declaracao -> inicializacao_variaveis .)
+    ID              reduce using rule 5 (declaracao -> inicializacao_variaveis .)
+    $end            reduce using rule 5 (declaracao -> inicializacao_variaveis .)
+
+
+state 11
+
+    (19) cabecalho -> ID . EPAREN lista_parametros DPAREN corpo FIM
+    (11) var -> ID .
+    (12) var -> ID . indice
+    (13) indice -> . indice ECOLCHE expressao DCOLCHE
+    (14) indice -> . ECOLCHE expressao DCOLCHE
+
+    EPAREN          shift and go to state 19
+    ATRIBUICAO      reduce using rule 11 (var -> ID .)
+    ECOLCHE         shift and go to state 21
+
+    indice                         shift and go to state 20
+
+state 12
+
+    (6) declaracao -> declaracao_funcao .
+
+    INTEIRO         reduce using rule 6 (declaracao -> declaracao_funcao .)
+    FLUTUANTE       reduce using rule 6 (declaracao -> declaracao_funcao .)
+    ID              reduce using rule 6 (declaracao -> declaracao_funcao .)
+    $end            reduce using rule 6 (declaracao -> declaracao_funcao .)
+
+
+state 13
+
+    (16) tipo -> FLUTUANTE .
+
+    DOISPONTOS      reduce using rule 16 (tipo -> FLUTUANTE .)
+    ID              reduce using rule 16 (tipo -> FLUTUANTE .)
+
+
+state 14
+
+    (2) lista_declaracoes -> lista_declaracoes declaracao .
+
+    INTEIRO         reduce using rule 2 (lista_declaracoes -> lista_declaracoes declaracao .)
+    FLUTUANTE       reduce using rule 2 (lista_declaracoes -> lista_declaracoes declaracao .)
+    ID              reduce using rule 2 (lista_declaracoes -> lista_declaracoes declaracao .)
+    $end            reduce using rule 2 (lista_declaracoes -> lista_declaracoes declaracao .)
+
+
+state 15
+
+    (38) atribuicao -> var ATRIBUICAO . expressao
+    (42) expressao -> . expressao_logica
+    (43) expressao -> . atribuicao
+    (44) expressao_logica -> . expressao_simples
+    (45) expressao_logica -> . expressao_logica operador_logico expressao_simples
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (46) expressao_simples -> . expressao_aditiva
+    (47) expressao_simples -> . expressao_simples operador_relacional expressao_aditiva
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    ID              shift and go to state 37
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    expressao_simples              shift and go to state 23
+    numero                         shift and go to state 32
+    expressao_aditiva              shift and go to state 40
+    fator                          shift and go to state 31
+    atribuicao                     shift and go to state 25
+    expressao_multiplicativa       shift and go to state 34
+    expressao_logica               shift and go to state 35
+    expressao                      shift and go to state 26
+    operador_negacao               shift and go to state 27
+    var                            shift and go to state 28
+    operador_soma                  shift and go to state 38
+    chamada_funcao                 shift and go to state 42
+
+state 16
+
+    (19) cabecalho -> ID . EPAREN lista_parametros DPAREN corpo FIM
+
+    EPAREN          shift and go to state 19
+
+
+state 17
+
+    (17) declaracao_funcao -> tipo cabecalho .
+
+    INTEIRO         reduce using rule 17 (declaracao_funcao -> tipo cabecalho .)
+    FLUTUANTE       reduce using rule 17 (declaracao_funcao -> tipo cabecalho .)
+    ID              reduce using rule 17 (declaracao_funcao -> tipo cabecalho .)
+    $end            reduce using rule 17 (declaracao_funcao -> tipo cabecalho .)
+
+
+state 18
+
+    (7) declaracao_variaveis -> tipo DOISPONTOS . lista_variaveis
+    (9) lista_variaveis -> . lista_variaveis , var
+    (10) lista_variaveis -> . var
+    (11) var -> . ID
+    (12) var -> . ID indice
+
+    ID              shift and go to state 44
+
+    lista_variaveis                shift and go to state 43
+    var                            shift and go to state 45
+
+state 19
+
+    (19) cabecalho -> ID EPAREN . lista_parametros DPAREN corpo FIM
+    (20) lista_parametros -> . lista_parametros VIRGULA parametro
+    (21) lista_parametros -> . parametro
+    (22) lista_parametros -> . vazio
+    (23) parametro -> . tipo DOISPONTOS ID
+    (24) parametro -> . parametro ECOLCHE DCOLCHE
+    (79) vazio -> .
+    (15) tipo -> . INTEIRO
+    (16) tipo -> . FLUTUANTE
+
+    DPAREN          reduce using rule 79 (vazio -> .)
+    VIRGULA         reduce using rule 79 (vazio -> .)
+    INTEIRO         shift and go to state 4
+    FLUTUANTE       shift and go to state 13
+
+    tipo                           shift and go to state 46
+    lista_parametros               shift and go to state 47
+    parametro                      shift and go to state 49
+    vazio                          shift and go to state 48
+
+state 20
+
+    (12) var -> ID indice .
+    (13) indice -> indice . ECOLCHE expressao DCOLCHE
+
+    ATRIBUICAO      reduce using rule 12 (var -> ID indice .)
+    MULTIPLICACAO   reduce using rule 12 (var -> ID indice .)
+    DIVISAO         reduce using rule 12 (var -> ID indice .)
+    ADICAO          reduce using rule 12 (var -> ID indice .)
+    SUBTRACAO       reduce using rule 12 (var -> ID indice .)
+    MENORQ          reduce using rule 12 (var -> ID indice .)
+    MAIORQ          reduce using rule 12 (var -> ID indice .)
+    IGUAL           reduce using rule 12 (var -> ID indice .)
+    DESIGUAL        reduce using rule 12 (var -> ID indice .)
+    MENORIGUAL      reduce using rule 12 (var -> ID indice .)
+    MAIORIGUAL      reduce using rule 12 (var -> ID indice .)
+    ELOGICO         reduce using rule 12 (var -> ID indice .)
+    OULOGICO        reduce using rule 12 (var -> ID indice .)
+    FIM             reduce using rule 12 (var -> ID indice .)
+    SE              reduce using rule 12 (var -> ID indice .)
+    REPITA          reduce using rule 12 (var -> ID indice .)
+    LEIA            reduce using rule 12 (var -> ID indice .)
+    ESCREVA         reduce using rule 12 (var -> ID indice .)
+    RETORNA         reduce using rule 12 (var -> ID indice .)
+    error           reduce using rule 12 (var -> ID indice .)
+    INTEIRO         reduce using rule 12 (var -> ID indice .)
+    FLUTUANTE       reduce using rule 12 (var -> ID indice .)
+    ID              reduce using rule 12 (var -> ID indice .)
+    EPAREN          reduce using rule 12 (var -> ID indice .)
+    NEGACAO         reduce using rule 12 (var -> ID indice .)
+    NUM_INTEIRO     reduce using rule 12 (var -> ID indice .)
+    NUM_FLUTUANTE   reduce using rule 12 (var -> ID indice .)
+    NUM_CIENTIFICO  reduce using rule 12 (var -> ID indice .)
+    $end            reduce using rule 12 (var -> ID indice .)
+    DCOLCHE         reduce using rule 12 (var -> ID indice .)
+    DPAREN          reduce using rule 12 (var -> ID indice .)
+    VIRGULA         reduce using rule 12 (var -> ID indice .)
+    ,               reduce using rule 12 (var -> ID indice .)
+    ECOLCHE         shift and go to state 50
+
+
+state 21
+
+    (14) indice -> ECOLCHE . expressao DCOLCHE
+    (42) expressao -> . expressao_logica
+    (43) expressao -> . atribuicao
+    (44) expressao_logica -> . expressao_simples
+    (45) expressao_logica -> . expressao_logica operador_logico expressao_simples
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (46) expressao_simples -> . expressao_aditiva
+    (47) expressao_simples -> . expressao_simples operador_relacional expressao_aditiva
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    ID              shift and go to state 37
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    expressao_simples              shift and go to state 23
+    numero                         shift and go to state 32
+    expressao_aditiva              shift and go to state 40
+    fator                          shift and go to state 31
+    atribuicao                     shift and go to state 25
+    expressao_multiplicativa       shift and go to state 34
+    expressao_logica               shift and go to state 35
+    expressao                      shift and go to state 51
+    operador_negacao               shift and go to state 27
+    var                            shift and go to state 28
+    operador_soma                  shift and go to state 38
+    chamada_funcao                 shift and go to state 42
+
+state 22
+
+    (72) numero -> NUM_INTEIRO .
+
+    MULTIPLICACAO   reduce using rule 72 (numero -> NUM_INTEIRO .)
+    DIVISAO         reduce using rule 72 (numero -> NUM_INTEIRO .)
+    ADICAO          reduce using rule 72 (numero -> NUM_INTEIRO .)
+    SUBTRACAO       reduce using rule 72 (numero -> NUM_INTEIRO .)
+    MENORQ          reduce using rule 72 (numero -> NUM_INTEIRO .)
+    MAIORQ          reduce using rule 72 (numero -> NUM_INTEIRO .)
+    IGUAL           reduce using rule 72 (numero -> NUM_INTEIRO .)
+    DESIGUAL        reduce using rule 72 (numero -> NUM_INTEIRO .)
+    MENORIGUAL      reduce using rule 72 (numero -> NUM_INTEIRO .)
+    MAIORIGUAL      reduce using rule 72 (numero -> NUM_INTEIRO .)
+    ELOGICO         reduce using rule 72 (numero -> NUM_INTEIRO .)
+    OULOGICO        reduce using rule 72 (numero -> NUM_INTEIRO .)
+    DPAREN          reduce using rule 72 (numero -> NUM_INTEIRO .)
+    INTEIRO         reduce using rule 72 (numero -> NUM_INTEIRO .)
+    FLUTUANTE       reduce using rule 72 (numero -> NUM_INTEIRO .)
+    ID              reduce using rule 72 (numero -> NUM_INTEIRO .)
+    $end            reduce using rule 72 (numero -> NUM_INTEIRO .)
+    DCOLCHE         reduce using rule 72 (numero -> NUM_INTEIRO .)
+    VIRGULA         reduce using rule 72 (numero -> NUM_INTEIRO .)
+    FIM             reduce using rule 72 (numero -> NUM_INTEIRO .)
+    SE              reduce using rule 72 (numero -> NUM_INTEIRO .)
+    REPITA          reduce using rule 72 (numero -> NUM_INTEIRO .)
+    LEIA            reduce using rule 72 (numero -> NUM_INTEIRO .)
+    ESCREVA         reduce using rule 72 (numero -> NUM_INTEIRO .)
+    RETORNA         reduce using rule 72 (numero -> NUM_INTEIRO .)
+    error           reduce using rule 72 (numero -> NUM_INTEIRO .)
+    EPAREN          reduce using rule 72 (numero -> NUM_INTEIRO .)
+    NEGACAO         reduce using rule 72 (numero -> NUM_INTEIRO .)
+    NUM_INTEIRO     reduce using rule 72 (numero -> NUM_INTEIRO .)
+    NUM_FLUTUANTE   reduce using rule 72 (numero -> NUM_INTEIRO .)
+    NUM_CIENTIFICO  reduce using rule 72 (numero -> NUM_INTEIRO .)
+
+
+state 23
+
+    (44) expressao_logica -> expressao_simples .
+    (47) expressao_simples -> expressao_simples . operador_relacional expressao_aditiva
+    (55) operador_relacional -> . MENORQ
+    (56) operador_relacional -> . MAIORQ
+    (57) operador_relacional -> . IGUAL
+    (58) operador_relacional -> . DESIGUAL
+    (59) operador_relacional -> . MENORIGUAL
+    (60) operador_relacional -> . MAIORIGUAL
+
+    ELOGICO         reduce using rule 44 (expressao_logica -> expressao_simples .)
+    OULOGICO        reduce using rule 44 (expressao_logica -> expressao_simples .)
+    FIM             reduce using rule 44 (expressao_logica -> expressao_simples .)
+    SE              reduce using rule 44 (expressao_logica -> expressao_simples .)
+    REPITA          reduce using rule 44 (expressao_logica -> expressao_simples .)
+    LEIA            reduce using rule 44 (expressao_logica -> expressao_simples .)
+    ESCREVA         reduce using rule 44 (expressao_logica -> expressao_simples .)
+    RETORNA         reduce using rule 44 (expressao_logica -> expressao_simples .)
+    error           reduce using rule 44 (expressao_logica -> expressao_simples .)
+    INTEIRO         reduce using rule 44 (expressao_logica -> expressao_simples .)
+    FLUTUANTE       reduce using rule 44 (expressao_logica -> expressao_simples .)
+    ID              reduce using rule 44 (expressao_logica -> expressao_simples .)
+    EPAREN          reduce using rule 44 (expressao_logica -> expressao_simples .)
+    ADICAO          reduce using rule 44 (expressao_logica -> expressao_simples .)
+    SUBTRACAO       reduce using rule 44 (expressao_logica -> expressao_simples .)
+    NEGACAO         reduce using rule 44 (expressao_logica -> expressao_simples .)
+    NUM_INTEIRO     reduce using rule 44 (expressao_logica -> expressao_simples .)
+    NUM_FLUTUANTE   reduce using rule 44 (expressao_logica -> expressao_simples .)
+    NUM_CIENTIFICO  reduce using rule 44 (expressao_logica -> expressao_simples .)
+    DPAREN          reduce using rule 44 (expressao_logica -> expressao_simples .)
+    VIRGULA         reduce using rule 44 (expressao_logica -> expressao_simples .)
+    $end            reduce using rule 44 (expressao_logica -> expressao_simples .)
+    DCOLCHE         reduce using rule 44 (expressao_logica -> expressao_simples .)
+    MENORQ          shift and go to state 57
+    MAIORQ          shift and go to state 52
+    IGUAL           shift and go to state 54
+    DESIGUAL        shift and go to state 56
+    MENORIGUAL      shift and go to state 58
+    MAIORIGUAL      shift and go to state 53
+
+    operador_relacional            shift and go to state 55
+
+state 24
+
+    (65) operador_negacao -> NEGACAO .
+
+    EPAREN          reduce using rule 65 (operador_negacao -> NEGACAO .)
+    ID              reduce using rule 65 (operador_negacao -> NEGACAO .)
+    NUM_INTEIRO     reduce using rule 65 (operador_negacao -> NEGACAO .)
+    NUM_FLUTUANTE   reduce using rule 65 (operador_negacao -> NEGACAO .)
+    NUM_CIENTIFICO  reduce using rule 65 (operador_negacao -> NEGACAO .)
+
+
+state 25
+
+    (43) expressao -> atribuicao .
+
+    DCOLCHE         reduce using rule 43 (expressao -> atribuicao .)
+    INTEIRO         reduce using rule 43 (expressao -> atribuicao .)
+    FLUTUANTE       reduce using rule 43 (expressao -> atribuicao .)
+    ID              reduce using rule 43 (expressao -> atribuicao .)
+    $end            reduce using rule 43 (expressao -> atribuicao .)
+    DPAREN          reduce using rule 43 (expressao -> atribuicao .)
+    VIRGULA         reduce using rule 43 (expressao -> atribuicao .)
+    FIM             reduce using rule 43 (expressao -> atribuicao .)
+    SE              reduce using rule 43 (expressao -> atribuicao .)
+    REPITA          reduce using rule 43 (expressao -> atribuicao .)
+    LEIA            reduce using rule 43 (expressao -> atribuicao .)
+    ESCREVA         reduce using rule 43 (expressao -> atribuicao .)
+    RETORNA         reduce using rule 43 (expressao -> atribuicao .)
+    error           reduce using rule 43 (expressao -> atribuicao .)
+    EPAREN          reduce using rule 43 (expressao -> atribuicao .)
+    ADICAO          reduce using rule 43 (expressao -> atribuicao .)
+    SUBTRACAO       reduce using rule 43 (expressao -> atribuicao .)
+    NEGACAO         reduce using rule 43 (expressao -> atribuicao .)
+    NUM_INTEIRO     reduce using rule 43 (expressao -> atribuicao .)
+    NUM_FLUTUANTE   reduce using rule 43 (expressao -> atribuicao .)
+    NUM_CIENTIFICO  reduce using rule 43 (expressao -> atribuicao .)
+
+
+state 26
+
+    (38) atribuicao -> var ATRIBUICAO expressao .
+
+    INTEIRO         reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    FLUTUANTE       reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    ID              reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    $end            reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    DCOLCHE         reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    DPAREN          reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    VIRGULA         reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    FIM             reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    SE              reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    REPITA          reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    LEIA            reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    ESCREVA         reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    RETORNA         reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    error           reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    EPAREN          reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    ADICAO          reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    SUBTRACAO       reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    NEGACAO         reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    NUM_INTEIRO     reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    NUM_FLUTUANTE   reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+    NUM_CIENTIFICO  reduce using rule 38 (atribuicao -> var ATRIBUICAO expressao .)
+
+
+state 27
+
+    (54) expressao_unaria -> operador_negacao . fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    EPAREN          shift and go to state 29
+    ID              shift and go to state 37
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    fator                          shift and go to state 59
+    numero                         shift and go to state 32
+    var                            shift and go to state 60
+    chamada_funcao                 shift and go to state 42
+
+state 28
+
+    (38) atribuicao -> var . ATRIBUICAO expressao
+    (69) fator -> var .
+
+    ATRIBUICAO      shift and go to state 15
+    MULTIPLICACAO   reduce using rule 69 (fator -> var .)
+    DIVISAO         reduce using rule 69 (fator -> var .)
+    ADICAO          reduce using rule 69 (fator -> var .)
+    SUBTRACAO       reduce using rule 69 (fator -> var .)
+    MENORQ          reduce using rule 69 (fator -> var .)
+    MAIORQ          reduce using rule 69 (fator -> var .)
+    IGUAL           reduce using rule 69 (fator -> var .)
+    DESIGUAL        reduce using rule 69 (fator -> var .)
+    MENORIGUAL      reduce using rule 69 (fator -> var .)
+    MAIORIGUAL      reduce using rule 69 (fator -> var .)
+    ELOGICO         reduce using rule 69 (fator -> var .)
+    OULOGICO        reduce using rule 69 (fator -> var .)
+    FIM             reduce using rule 69 (fator -> var .)
+    SE              reduce using rule 69 (fator -> var .)
+    REPITA          reduce using rule 69 (fator -> var .)
+    LEIA            reduce using rule 69 (fator -> var .)
+    ESCREVA         reduce using rule 69 (fator -> var .)
+    RETORNA         reduce using rule 69 (fator -> var .)
+    error           reduce using rule 69 (fator -> var .)
+    INTEIRO         reduce using rule 69 (fator -> var .)
+    FLUTUANTE       reduce using rule 69 (fator -> var .)
+    ID              reduce using rule 69 (fator -> var .)
+    EPAREN          reduce using rule 69 (fator -> var .)
+    NEGACAO         reduce using rule 69 (fator -> var .)
+    NUM_INTEIRO     reduce using rule 69 (fator -> var .)
+    NUM_FLUTUANTE   reduce using rule 69 (fator -> var .)
+    NUM_CIENTIFICO  reduce using rule 69 (fator -> var .)
+    DPAREN          reduce using rule 69 (fator -> var .)
+    VIRGULA         reduce using rule 69 (fator -> var .)
+    $end            reduce using rule 69 (fator -> var .)
+    DCOLCHE         reduce using rule 69 (fator -> var .)
+
+
+state 29
+
+    (68) fator -> EPAREN . expressao DPAREN
+    (42) expressao -> . expressao_logica
+    (43) expressao -> . atribuicao
+    (44) expressao_logica -> . expressao_simples
+    (45) expressao_logica -> . expressao_logica operador_logico expressao_simples
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (46) expressao_simples -> . expressao_aditiva
+    (47) expressao_simples -> . expressao_simples operador_relacional expressao_aditiva
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    ID              shift and go to state 37
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    expressao_simples              shift and go to state 23
+    numero                         shift and go to state 32
+    expressao_aditiva              shift and go to state 40
+    fator                          shift and go to state 31
+    atribuicao                     shift and go to state 25
+    expressao_multiplicativa       shift and go to state 34
+    expressao_logica               shift and go to state 35
+    expressao                      shift and go to state 61
+    operador_negacao               shift and go to state 27
+    var                            shift and go to state 28
+    operador_soma                  shift and go to state 38
+    chamada_funcao                 shift and go to state 42
+
+state 30
+
+    (50) expressao_multiplicativa -> expressao_unaria .
+
+    MULTIPLICACAO   reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    DIVISAO         reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    ADICAO          reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    SUBTRACAO       reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    MENORQ          reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    MAIORQ          reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    IGUAL           reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    DESIGUAL        reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    MENORIGUAL      reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    MAIORIGUAL      reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    ELOGICO         reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    OULOGICO        reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    INTEIRO         reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    FLUTUANTE       reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    ID              reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    $end            reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    DCOLCHE         reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    DPAREN          reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    VIRGULA         reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    FIM             reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    SE              reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    REPITA          reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    LEIA            reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    ESCREVA         reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    RETORNA         reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    error           reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    EPAREN          reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    NEGACAO         reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    NUM_INTEIRO     reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    NUM_FLUTUANTE   reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+    NUM_CIENTIFICO  reduce using rule 50 (expressao_multiplicativa -> expressao_unaria .)
+
+
+state 31
+
+    (52) expressao_unaria -> fator .
+
+    MULTIPLICACAO   reduce using rule 52 (expressao_unaria -> fator .)
+    DIVISAO         reduce using rule 52 (expressao_unaria -> fator .)
+    ADICAO          reduce using rule 52 (expressao_unaria -> fator .)
+    SUBTRACAO       reduce using rule 52 (expressao_unaria -> fator .)
+    MENORQ          reduce using rule 52 (expressao_unaria -> fator .)
+    MAIORQ          reduce using rule 52 (expressao_unaria -> fator .)
+    IGUAL           reduce using rule 52 (expressao_unaria -> fator .)
+    DESIGUAL        reduce using rule 52 (expressao_unaria -> fator .)
+    MENORIGUAL      reduce using rule 52 (expressao_unaria -> fator .)
+    MAIORIGUAL      reduce using rule 52 (expressao_unaria -> fator .)
+    ELOGICO         reduce using rule 52 (expressao_unaria -> fator .)
+    OULOGICO        reduce using rule 52 (expressao_unaria -> fator .)
+    DPAREN          reduce using rule 52 (expressao_unaria -> fator .)
+    FIM             reduce using rule 52 (expressao_unaria -> fator .)
+    SE              reduce using rule 52 (expressao_unaria -> fator .)
+    REPITA          reduce using rule 52 (expressao_unaria -> fator .)
+    LEIA            reduce using rule 52 (expressao_unaria -> fator .)
+    ESCREVA         reduce using rule 52 (expressao_unaria -> fator .)
+    RETORNA         reduce using rule 52 (expressao_unaria -> fator .)
+    error           reduce using rule 52 (expressao_unaria -> fator .)
+    INTEIRO         reduce using rule 52 (expressao_unaria -> fator .)
+    FLUTUANTE       reduce using rule 52 (expressao_unaria -> fator .)
+    ID              reduce using rule 52 (expressao_unaria -> fator .)
+    EPAREN          reduce using rule 52 (expressao_unaria -> fator .)
+    NEGACAO         reduce using rule 52 (expressao_unaria -> fator .)
+    NUM_INTEIRO     reduce using rule 52 (expressao_unaria -> fator .)
+    NUM_FLUTUANTE   reduce using rule 52 (expressao_unaria -> fator .)
+    NUM_CIENTIFICO  reduce using rule 52 (expressao_unaria -> fator .)
+    VIRGULA         reduce using rule 52 (expressao_unaria -> fator .)
+    DCOLCHE         reduce using rule 52 (expressao_unaria -> fator .)
+    $end            reduce using rule 52 (expressao_unaria -> fator .)
+
+
+state 32
+
+    (71) fator -> numero .
+
+    MULTIPLICACAO   reduce using rule 71 (fator -> numero .)
+    DIVISAO         reduce using rule 71 (fator -> numero .)
+    ADICAO          reduce using rule 71 (fator -> numero .)
+    SUBTRACAO       reduce using rule 71 (fator -> numero .)
+    MENORQ          reduce using rule 71 (fator -> numero .)
+    MAIORQ          reduce using rule 71 (fator -> numero .)
+    IGUAL           reduce using rule 71 (fator -> numero .)
+    DESIGUAL        reduce using rule 71 (fator -> numero .)
+    MENORIGUAL      reduce using rule 71 (fator -> numero .)
+    MAIORIGUAL      reduce using rule 71 (fator -> numero .)
+    ELOGICO         reduce using rule 71 (fator -> numero .)
+    OULOGICO        reduce using rule 71 (fator -> numero .)
+    INTEIRO         reduce using rule 71 (fator -> numero .)
+    FLUTUANTE       reduce using rule 71 (fator -> numero .)
+    ID              reduce using rule 71 (fator -> numero .)
+    $end            reduce using rule 71 (fator -> numero .)
+    DCOLCHE         reduce using rule 71 (fator -> numero .)
+    DPAREN          reduce using rule 71 (fator -> numero .)
+    VIRGULA         reduce using rule 71 (fator -> numero .)
+    FIM             reduce using rule 71 (fator -> numero .)
+    SE              reduce using rule 71 (fator -> numero .)
+    REPITA          reduce using rule 71 (fator -> numero .)
+    LEIA            reduce using rule 71 (fator -> numero .)
+    ESCREVA         reduce using rule 71 (fator -> numero .)
+    RETORNA         reduce using rule 71 (fator -> numero .)
+    error           reduce using rule 71 (fator -> numero .)
+    EPAREN          reduce using rule 71 (fator -> numero .)
+    NEGACAO         reduce using rule 71 (fator -> numero .)
+    NUM_INTEIRO     reduce using rule 71 (fator -> numero .)
+    NUM_FLUTUANTE   reduce using rule 71 (fator -> numero .)
+    NUM_CIENTIFICO  reduce using rule 71 (fator -> numero .)
+
+
+state 33
+
+    (61) operador_soma -> ADICAO .
+
+    EPAREN          reduce using rule 61 (operador_soma -> ADICAO .)
+    ID              reduce using rule 61 (operador_soma -> ADICAO .)
+    NUM_INTEIRO     reduce using rule 61 (operador_soma -> ADICAO .)
+    NUM_FLUTUANTE   reduce using rule 61 (operador_soma -> ADICAO .)
+    NUM_CIENTIFICO  reduce using rule 61 (operador_soma -> ADICAO .)
+    ADICAO          reduce using rule 61 (operador_soma -> ADICAO .)
+    SUBTRACAO       reduce using rule 61 (operador_soma -> ADICAO .)
+    NEGACAO         reduce using rule 61 (operador_soma -> ADICAO .)
+
+
+state 34
+
+    (48) expressao_aditiva -> expressao_multiplicativa .
+    (51) expressao_multiplicativa -> expressao_multiplicativa . operador_multiplicacao expressao_unaria
+    (66) operador_multiplicacao -> . MULTIPLICACAO
+    (67) operador_multiplicacao -> . DIVISAO
+
+    ADICAO          reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    SUBTRACAO       reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    MENORQ          reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    MAIORQ          reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    IGUAL           reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    DESIGUAL        reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    MENORIGUAL      reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    MAIORIGUAL      reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    ELOGICO         reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    OULOGICO        reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    DPAREN          reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    VIRGULA         reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    INTEIRO         reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    FLUTUANTE       reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    ID              reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    $end            reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    DCOLCHE         reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    FIM             reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    SE              reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    REPITA          reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    LEIA            reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    ESCREVA         reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    RETORNA         reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    error           reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    EPAREN          reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    NEGACAO         reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    NUM_INTEIRO     reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    NUM_FLUTUANTE   reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    NUM_CIENTIFICO  reduce using rule 48 (expressao_aditiva -> expressao_multiplicativa .)
+    MULTIPLICACAO   shift and go to state 62
+    DIVISAO         shift and go to state 63
+
+    operador_multiplicacao         shift and go to state 64
+
+state 35
+
+    (42) expressao -> expressao_logica .
+    (45) expressao_logica -> expressao_logica . operador_logico expressao_simples
+    (63) operador_logico -> . ELOGICO
+    (64) operador_logico -> . OULOGICO
+
+    DCOLCHE         reduce using rule 42 (expressao -> expressao_logica .)
+    INTEIRO         reduce using rule 42 (expressao -> expressao_logica .)
+    FLUTUANTE       reduce using rule 42 (expressao -> expressao_logica .)
+    ID              reduce using rule 42 (expressao -> expressao_logica .)
+    $end            reduce using rule 42 (expressao -> expressao_logica .)
+    DPAREN          reduce using rule 42 (expressao -> expressao_logica .)
+    VIRGULA         reduce using rule 42 (expressao -> expressao_logica .)
+    FIM             reduce using rule 42 (expressao -> expressao_logica .)
+    SE              reduce using rule 42 (expressao -> expressao_logica .)
+    REPITA          reduce using rule 42 (expressao -> expressao_logica .)
+    LEIA            reduce using rule 42 (expressao -> expressao_logica .)
+    ESCREVA         reduce using rule 42 (expressao -> expressao_logica .)
+    RETORNA         reduce using rule 42 (expressao -> expressao_logica .)
+    error           reduce using rule 42 (expressao -> expressao_logica .)
+    EPAREN          reduce using rule 42 (expressao -> expressao_logica .)
+    ADICAO          reduce using rule 42 (expressao -> expressao_logica .)
+    SUBTRACAO       reduce using rule 42 (expressao -> expressao_logica .)
+    NEGACAO         reduce using rule 42 (expressao -> expressao_logica .)
+    NUM_INTEIRO     reduce using rule 42 (expressao -> expressao_logica .)
+    NUM_FLUTUANTE   reduce using rule 42 (expressao -> expressao_logica .)
+    NUM_CIENTIFICO  reduce using rule 42 (expressao -> expressao_logica .)
+    ELOGICO         shift and go to state 66
+    OULOGICO        shift and go to state 65
+
+    operador_logico                shift and go to state 67
+
+state 36
+
+    (73) numero -> NUM_FLUTUANTE .
+
+    MULTIPLICACAO   reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    DIVISAO         reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    ADICAO          reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    SUBTRACAO       reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    MENORQ          reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    MAIORQ          reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    IGUAL           reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    DESIGUAL        reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    MENORIGUAL      reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    MAIORIGUAL      reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    ELOGICO         reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    OULOGICO        reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    DPAREN          reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    INTEIRO         reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    FLUTUANTE       reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    ID              reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    $end            reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    DCOLCHE         reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    VIRGULA         reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    FIM             reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    SE              reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    REPITA          reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    LEIA            reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    ESCREVA         reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    RETORNA         reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    error           reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    EPAREN          reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    NEGACAO         reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    NUM_INTEIRO     reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    NUM_FLUTUANTE   reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+    NUM_CIENTIFICO  reduce using rule 73 (numero -> NUM_FLUTUANTE .)
+
+
+state 37
+
+    (11) var -> ID .
+    (12) var -> ID . indice
+    (75) chamada_funcao -> ID . EPAREN lista_argumentos DPAREN
+    (13) indice -> . indice ECOLCHE expressao DCOLCHE
+    (14) indice -> . ECOLCHE expressao DCOLCHE
+
+  ! shift/reduce conflict for EPAREN resolved as shift
+    ATRIBUICAO      reduce using rule 11 (var -> ID .)
+    MULTIPLICACAO   reduce using rule 11 (var -> ID .)
+    DIVISAO         reduce using rule 11 (var -> ID .)
+    ADICAO          reduce using rule 11 (var -> ID .)
+    SUBTRACAO       reduce using rule 11 (var -> ID .)
+    MENORQ          reduce using rule 11 (var -> ID .)
+    MAIORQ          reduce using rule 11 (var -> ID .)
+    IGUAL           reduce using rule 11 (var -> ID .)
+    DESIGUAL        reduce using rule 11 (var -> ID .)
+    MENORIGUAL      reduce using rule 11 (var -> ID .)
+    MAIORIGUAL      reduce using rule 11 (var -> ID .)
+    ELOGICO         reduce using rule 11 (var -> ID .)
+    OULOGICO        reduce using rule 11 (var -> ID .)
+    FIM             reduce using rule 11 (var -> ID .)
+    SE              reduce using rule 11 (var -> ID .)
+    REPITA          reduce using rule 11 (var -> ID .)
+    LEIA            reduce using rule 11 (var -> ID .)
+    ESCREVA         reduce using rule 11 (var -> ID .)
+    RETORNA         reduce using rule 11 (var -> ID .)
+    error           reduce using rule 11 (var -> ID .)
+    INTEIRO         reduce using rule 11 (var -> ID .)
+    FLUTUANTE       reduce using rule 11 (var -> ID .)
+    ID              reduce using rule 11 (var -> ID .)
+    NEGACAO         reduce using rule 11 (var -> ID .)
+    NUM_INTEIRO     reduce using rule 11 (var -> ID .)
+    NUM_FLUTUANTE   reduce using rule 11 (var -> ID .)
+    NUM_CIENTIFICO  reduce using rule 11 (var -> ID .)
+    $end            reduce using rule 11 (var -> ID .)
+    DCOLCHE         reduce using rule 11 (var -> ID .)
+    DPAREN          reduce using rule 11 (var -> ID .)
+    VIRGULA         reduce using rule 11 (var -> ID .)
+    EPAREN          shift and go to state 68
+    ECOLCHE         shift and go to state 21
+
+  ! EPAREN          [ reduce using rule 11 (var -> ID .) ]
+
+    indice                         shift and go to state 20
+
+state 38
+
+    (53) expressao_unaria -> operador_soma . fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    EPAREN          shift and go to state 29
+    ID              shift and go to state 37
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    fator                          shift and go to state 69
+    numero                         shift and go to state 32
+    var                            shift and go to state 60
+    chamada_funcao                 shift and go to state 42
+
+state 39
+
+    (74) numero -> NUM_CIENTIFICO .
+
+    MULTIPLICACAO   reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    DIVISAO         reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    ADICAO          reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    SUBTRACAO       reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    MENORQ          reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    MAIORQ          reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    IGUAL           reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    DESIGUAL        reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    MENORIGUAL      reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    MAIORIGUAL      reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    ELOGICO         reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    OULOGICO        reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    DPAREN          reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    INTEIRO         reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    FLUTUANTE       reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    ID              reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    $end            reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    DCOLCHE         reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    VIRGULA         reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    FIM             reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    SE              reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    REPITA          reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    LEIA            reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    ESCREVA         reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    RETORNA         reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    error           reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    EPAREN          reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    NEGACAO         reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    NUM_INTEIRO     reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    NUM_FLUTUANTE   reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+    NUM_CIENTIFICO  reduce using rule 74 (numero -> NUM_CIENTIFICO .)
+
+
+state 40
+
+    (46) expressao_simples -> expressao_aditiva .
+    (49) expressao_aditiva -> expressao_aditiva . operador_soma expressao_multiplicativa
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+
+  ! shift/reduce conflict for ADICAO resolved as shift
+  ! shift/reduce conflict for SUBTRACAO resolved as shift
+    MENORQ          reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    MAIORQ          reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    IGUAL           reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    DESIGUAL        reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    MENORIGUAL      reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    MAIORIGUAL      reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    ELOGICO         reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    OULOGICO        reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    DPAREN          reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    VIRGULA         reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    DCOLCHE         reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    INTEIRO         reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    FLUTUANTE       reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    ID              reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    $end            reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    FIM             reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    SE              reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    REPITA          reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    LEIA            reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    ESCREVA         reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    RETORNA         reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    error           reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    EPAREN          reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    NEGACAO         reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    NUM_INTEIRO     reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    NUM_FLUTUANTE   reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    NUM_CIENTIFICO  reduce using rule 46 (expressao_simples -> expressao_aditiva .)
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+
+  ! ADICAO          [ reduce using rule 46 (expressao_simples -> expressao_aditiva .) ]
+  ! SUBTRACAO       [ reduce using rule 46 (expressao_simples -> expressao_aditiva .) ]
+
+    operador_soma                  shift and go to state 70
+
+state 41
+
+    (62) operador_soma -> SUBTRACAO .
+
+    EPAREN          reduce using rule 62 (operador_soma -> SUBTRACAO .)
+    ID              reduce using rule 62 (operador_soma -> SUBTRACAO .)
+    NUM_INTEIRO     reduce using rule 62 (operador_soma -> SUBTRACAO .)
+    NUM_FLUTUANTE   reduce using rule 62 (operador_soma -> SUBTRACAO .)
+    NUM_CIENTIFICO  reduce using rule 62 (operador_soma -> SUBTRACAO .)
+    ADICAO          reduce using rule 62 (operador_soma -> SUBTRACAO .)
+    SUBTRACAO       reduce using rule 62 (operador_soma -> SUBTRACAO .)
+    NEGACAO         reduce using rule 62 (operador_soma -> SUBTRACAO .)
+
+
+state 42
+
+    (70) fator -> chamada_funcao .
+
+    MULTIPLICACAO   reduce using rule 70 (fator -> chamada_funcao .)
+    DIVISAO         reduce using rule 70 (fator -> chamada_funcao .)
+    ADICAO          reduce using rule 70 (fator -> chamada_funcao .)
+    SUBTRACAO       reduce using rule 70 (fator -> chamada_funcao .)
+    MENORQ          reduce using rule 70 (fator -> chamada_funcao .)
+    MAIORQ          reduce using rule 70 (fator -> chamada_funcao .)
+    IGUAL           reduce using rule 70 (fator -> chamada_funcao .)
+    DESIGUAL        reduce using rule 70 (fator -> chamada_funcao .)
+    MENORIGUAL      reduce using rule 70 (fator -> chamada_funcao .)
+    MAIORIGUAL      reduce using rule 70 (fator -> chamada_funcao .)
+    ELOGICO         reduce using rule 70 (fator -> chamada_funcao .)
+    OULOGICO        reduce using rule 70 (fator -> chamada_funcao .)
+    INTEIRO         reduce using rule 70 (fator -> chamada_funcao .)
+    FLUTUANTE       reduce using rule 70 (fator -> chamada_funcao .)
+    ID              reduce using rule 70 (fator -> chamada_funcao .)
+    $end            reduce using rule 70 (fator -> chamada_funcao .)
+    DCOLCHE         reduce using rule 70 (fator -> chamada_funcao .)
+    DPAREN          reduce using rule 70 (fator -> chamada_funcao .)
+    VIRGULA         reduce using rule 70 (fator -> chamada_funcao .)
+    FIM             reduce using rule 70 (fator -> chamada_funcao .)
+    SE              reduce using rule 70 (fator -> chamada_funcao .)
+    REPITA          reduce using rule 70 (fator -> chamada_funcao .)
+    LEIA            reduce using rule 70 (fator -> chamada_funcao .)
+    ESCREVA         reduce using rule 70 (fator -> chamada_funcao .)
+    RETORNA         reduce using rule 70 (fator -> chamada_funcao .)
+    error           reduce using rule 70 (fator -> chamada_funcao .)
+    EPAREN          reduce using rule 70 (fator -> chamada_funcao .)
+    NEGACAO         reduce using rule 70 (fator -> chamada_funcao .)
+    NUM_INTEIRO     reduce using rule 70 (fator -> chamada_funcao .)
+    NUM_FLUTUANTE   reduce using rule 70 (fator -> chamada_funcao .)
+    NUM_CIENTIFICO  reduce using rule 70 (fator -> chamada_funcao .)
+
+
+state 43
+
+    (7) declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .
+    (9) lista_variaveis -> lista_variaveis . , var
+
+    INTEIRO         reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    FLUTUANTE       reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    ID              reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    $end            reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    FIM             reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    SE              reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    REPITA          reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    LEIA            reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    ESCREVA         reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    RETORNA         reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    error           reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    EPAREN          reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    ADICAO          reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    SUBTRACAO       reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    NEGACAO         reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    NUM_INTEIRO     reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    NUM_FLUTUANTE   reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    NUM_CIENTIFICO  reduce using rule 7 (declaracao_variaveis -> tipo DOISPONTOS lista_variaveis .)
+    ,               shift and go to state 71
+
+
+state 44
+
+    (11) var -> ID .
+    (12) var -> ID . indice
+    (13) indice -> . indice ECOLCHE expressao DCOLCHE
+    (14) indice -> . ECOLCHE expressao DCOLCHE
+
+    ,               reduce using rule 11 (var -> ID .)
+    INTEIRO         reduce using rule 11 (var -> ID .)
+    FLUTUANTE       reduce using rule 11 (var -> ID .)
+    ID              reduce using rule 11 (var -> ID .)
+    $end            reduce using rule 11 (var -> ID .)
+    FIM             reduce using rule 11 (var -> ID .)
+    SE              reduce using rule 11 (var -> ID .)
+    REPITA          reduce using rule 11 (var -> ID .)
+    LEIA            reduce using rule 11 (var -> ID .)
+    ESCREVA         reduce using rule 11 (var -> ID .)
+    RETORNA         reduce using rule 11 (var -> ID .)
+    error           reduce using rule 11 (var -> ID .)
+    EPAREN          reduce using rule 11 (var -> ID .)
+    ADICAO          reduce using rule 11 (var -> ID .)
+    SUBTRACAO       reduce using rule 11 (var -> ID .)
+    NEGACAO         reduce using rule 11 (var -> ID .)
+    NUM_INTEIRO     reduce using rule 11 (var -> ID .)
+    NUM_FLUTUANTE   reduce using rule 11 (var -> ID .)
+    NUM_CIENTIFICO  reduce using rule 11 (var -> ID .)
+    ECOLCHE         shift and go to state 21
+
+    indice                         shift and go to state 20
+
+state 45
+
+    (10) lista_variaveis -> var .
+
+    ,               reduce using rule 10 (lista_variaveis -> var .)
+    INTEIRO         reduce using rule 10 (lista_variaveis -> var .)
+    FLUTUANTE       reduce using rule 10 (lista_variaveis -> var .)
+    ID              reduce using rule 10 (lista_variaveis -> var .)
+    $end            reduce using rule 10 (lista_variaveis -> var .)
+    FIM             reduce using rule 10 (lista_variaveis -> var .)
+    SE              reduce using rule 10 (lista_variaveis -> var .)
+    REPITA          reduce using rule 10 (lista_variaveis -> var .)
+    LEIA            reduce using rule 10 (lista_variaveis -> var .)
+    ESCREVA         reduce using rule 10 (lista_variaveis -> var .)
+    RETORNA         reduce using rule 10 (lista_variaveis -> var .)
+    error           reduce using rule 10 (lista_variaveis -> var .)
+    EPAREN          reduce using rule 10 (lista_variaveis -> var .)
+    ADICAO          reduce using rule 10 (lista_variaveis -> var .)
+    SUBTRACAO       reduce using rule 10 (lista_variaveis -> var .)
+    NEGACAO         reduce using rule 10 (lista_variaveis -> var .)
+    NUM_INTEIRO     reduce using rule 10 (lista_variaveis -> var .)
+    NUM_FLUTUANTE   reduce using rule 10 (lista_variaveis -> var .)
+    NUM_CIENTIFICO  reduce using rule 10 (lista_variaveis -> var .)
+
+
+state 46
+
+    (23) parametro -> tipo . DOISPONTOS ID
+
+    DOISPONTOS      shift and go to state 72
+
+
+state 47
+
+    (19) cabecalho -> ID EPAREN lista_parametros . DPAREN corpo FIM
+    (20) lista_parametros -> lista_parametros . VIRGULA parametro
+
+    DPAREN          shift and go to state 73
+    VIRGULA         shift and go to state 74
+
+
+state 48
+
+    (22) lista_parametros -> vazio .
+
+    DPAREN          reduce using rule 22 (lista_parametros -> vazio .)
+    VIRGULA         reduce using rule 22 (lista_parametros -> vazio .)
+
+
+state 49
+
+    (21) lista_parametros -> parametro .
+    (24) parametro -> parametro . ECOLCHE DCOLCHE
+
+    DPAREN          reduce using rule 21 (lista_parametros -> parametro .)
+    VIRGULA         reduce using rule 21 (lista_parametros -> parametro .)
+    ECOLCHE         shift and go to state 75
+
+
+state 50
+
+    (13) indice -> indice ECOLCHE . expressao DCOLCHE
+    (42) expressao -> . expressao_logica
+    (43) expressao -> . atribuicao
+    (44) expressao_logica -> . expressao_simples
+    (45) expressao_logica -> . expressao_logica operador_logico expressao_simples
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (46) expressao_simples -> . expressao_aditiva
+    (47) expressao_simples -> . expressao_simples operador_relacional expressao_aditiva
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    ID              shift and go to state 37
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    expressao_simples              shift and go to state 23
+    numero                         shift and go to state 32
+    fator                          shift and go to state 31
+    atribuicao                     shift and go to state 25
+    expressao_multiplicativa       shift and go to state 34
+    expressao_logica               shift and go to state 35
+    expressao                      shift and go to state 76
+    operador_negacao               shift and go to state 27
+    expressao_aditiva              shift and go to state 40
+    var                            shift and go to state 28
+    operador_soma                  shift and go to state 38
+    chamada_funcao                 shift and go to state 42
+
+state 51
+
+    (14) indice -> ECOLCHE expressao . DCOLCHE
+
+    DCOLCHE         shift and go to state 77
+
+
+state 52
+
+    (56) operador_relacional -> MAIORQ .
+
+    EPAREN          reduce using rule 56 (operador_relacional -> MAIORQ .)
+    ADICAO          reduce using rule 56 (operador_relacional -> MAIORQ .)
+    SUBTRACAO       reduce using rule 56 (operador_relacional -> MAIORQ .)
+    NEGACAO         reduce using rule 56 (operador_relacional -> MAIORQ .)
+    ID              reduce using rule 56 (operador_relacional -> MAIORQ .)
+    NUM_INTEIRO     reduce using rule 56 (operador_relacional -> MAIORQ .)
+    NUM_FLUTUANTE   reduce using rule 56 (operador_relacional -> MAIORQ .)
+    NUM_CIENTIFICO  reduce using rule 56 (operador_relacional -> MAIORQ .)
+
+
+state 53
+
+    (60) operador_relacional -> MAIORIGUAL .
+
+    EPAREN          reduce using rule 60 (operador_relacional -> MAIORIGUAL .)
+    ADICAO          reduce using rule 60 (operador_relacional -> MAIORIGUAL .)
+    SUBTRACAO       reduce using rule 60 (operador_relacional -> MAIORIGUAL .)
+    NEGACAO         reduce using rule 60 (operador_relacional -> MAIORIGUAL .)
+    ID              reduce using rule 60 (operador_relacional -> MAIORIGUAL .)
+    NUM_INTEIRO     reduce using rule 60 (operador_relacional -> MAIORIGUAL .)
+    NUM_FLUTUANTE   reduce using rule 60 (operador_relacional -> MAIORIGUAL .)
+    NUM_CIENTIFICO  reduce using rule 60 (operador_relacional -> MAIORIGUAL .)
+
+
+state 54
+
+    (57) operador_relacional -> IGUAL .
+
+    EPAREN          reduce using rule 57 (operador_relacional -> IGUAL .)
+    ADICAO          reduce using rule 57 (operador_relacional -> IGUAL .)
+    SUBTRACAO       reduce using rule 57 (operador_relacional -> IGUAL .)
+    NEGACAO         reduce using rule 57 (operador_relacional -> IGUAL .)
+    ID              reduce using rule 57 (operador_relacional -> IGUAL .)
+    NUM_INTEIRO     reduce using rule 57 (operador_relacional -> IGUAL .)
+    NUM_FLUTUANTE   reduce using rule 57 (operador_relacional -> IGUAL .)
+    NUM_CIENTIFICO  reduce using rule 57 (operador_relacional -> IGUAL .)
+
+
+state 55
+
+    (47) expressao_simples -> expressao_simples operador_relacional . expressao_aditiva
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    ID              shift and go to state 37
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    fator                          shift and go to state 31
+    numero                         shift and go to state 32
+    expressao_multiplicativa       shift and go to state 34
+    operador_negacao               shift and go to state 27
+    chamada_funcao                 shift and go to state 42
+    expressao_aditiva              shift and go to state 78
+    var                            shift and go to state 60
+    operador_soma                  shift and go to state 38
+
+state 56
+
+    (58) operador_relacional -> DESIGUAL .
+
+    EPAREN          reduce using rule 58 (operador_relacional -> DESIGUAL .)
+    ADICAO          reduce using rule 58 (operador_relacional -> DESIGUAL .)
+    SUBTRACAO       reduce using rule 58 (operador_relacional -> DESIGUAL .)
+    NEGACAO         reduce using rule 58 (operador_relacional -> DESIGUAL .)
+    ID              reduce using rule 58 (operador_relacional -> DESIGUAL .)
+    NUM_INTEIRO     reduce using rule 58 (operador_relacional -> DESIGUAL .)
+    NUM_FLUTUANTE   reduce using rule 58 (operador_relacional -> DESIGUAL .)
+    NUM_CIENTIFICO  reduce using rule 58 (operador_relacional -> DESIGUAL .)
+
+
+state 57
+
+    (55) operador_relacional -> MENORQ .
+
+    EPAREN          reduce using rule 55 (operador_relacional -> MENORQ .)
+    ADICAO          reduce using rule 55 (operador_relacional -> MENORQ .)
+    SUBTRACAO       reduce using rule 55 (operador_relacional -> MENORQ .)
+    NEGACAO         reduce using rule 55 (operador_relacional -> MENORQ .)
+    ID              reduce using rule 55 (operador_relacional -> MENORQ .)
+    NUM_INTEIRO     reduce using rule 55 (operador_relacional -> MENORQ .)
+    NUM_FLUTUANTE   reduce using rule 55 (operador_relacional -> MENORQ .)
+    NUM_CIENTIFICO  reduce using rule 55 (operador_relacional -> MENORQ .)
+
+
+state 58
+
+    (59) operador_relacional -> MENORIGUAL .
+
+    EPAREN          reduce using rule 59 (operador_relacional -> MENORIGUAL .)
+    ADICAO          reduce using rule 59 (operador_relacional -> MENORIGUAL .)
+    SUBTRACAO       reduce using rule 59 (operador_relacional -> MENORIGUAL .)
+    NEGACAO         reduce using rule 59 (operador_relacional -> MENORIGUAL .)
+    ID              reduce using rule 59 (operador_relacional -> MENORIGUAL .)
+    NUM_INTEIRO     reduce using rule 59 (operador_relacional -> MENORIGUAL .)
+    NUM_FLUTUANTE   reduce using rule 59 (operador_relacional -> MENORIGUAL .)
+    NUM_CIENTIFICO  reduce using rule 59 (operador_relacional -> MENORIGUAL .)
+
+
+state 59
+
+    (54) expressao_unaria -> operador_negacao fator .
+
+    MULTIPLICACAO   reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    DIVISAO         reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    ADICAO          reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    SUBTRACAO       reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    MENORQ          reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    MAIORQ          reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    IGUAL           reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    DESIGUAL        reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    MENORIGUAL      reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    MAIORIGUAL      reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    ELOGICO         reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    OULOGICO        reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    DPAREN          reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    FIM             reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    SE              reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    REPITA          reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    LEIA            reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    ESCREVA         reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    RETORNA         reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    error           reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    INTEIRO         reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    FLUTUANTE       reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    ID              reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    EPAREN          reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    NEGACAO         reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    NUM_INTEIRO     reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    NUM_FLUTUANTE   reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    NUM_CIENTIFICO  reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    VIRGULA         reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    DCOLCHE         reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+    $end            reduce using rule 54 (expressao_unaria -> operador_negacao fator .)
+
+
+state 60
+
+    (69) fator -> var .
+
+    MULTIPLICACAO   reduce using rule 69 (fator -> var .)
+    DIVISAO         reduce using rule 69 (fator -> var .)
+    ADICAO          reduce using rule 69 (fator -> var .)
+    SUBTRACAO       reduce using rule 69 (fator -> var .)
+    MENORQ          reduce using rule 69 (fator -> var .)
+    MAIORQ          reduce using rule 69 (fator -> var .)
+    IGUAL           reduce using rule 69 (fator -> var .)
+    DESIGUAL        reduce using rule 69 (fator -> var .)
+    MENORIGUAL      reduce using rule 69 (fator -> var .)
+    MAIORIGUAL      reduce using rule 69 (fator -> var .)
+    ELOGICO         reduce using rule 69 (fator -> var .)
+    OULOGICO        reduce using rule 69 (fator -> var .)
+    INTEIRO         reduce using rule 69 (fator -> var .)
+    FLUTUANTE       reduce using rule 69 (fator -> var .)
+    ID              reduce using rule 69 (fator -> var .)
+    $end            reduce using rule 69 (fator -> var .)
+    DCOLCHE         reduce using rule 69 (fator -> var .)
+    DPAREN          reduce using rule 69 (fator -> var .)
+    VIRGULA         reduce using rule 69 (fator -> var .)
+    FIM             reduce using rule 69 (fator -> var .)
+    SE              reduce using rule 69 (fator -> var .)
+    REPITA          reduce using rule 69 (fator -> var .)
+    LEIA            reduce using rule 69 (fator -> var .)
+    ESCREVA         reduce using rule 69 (fator -> var .)
+    RETORNA         reduce using rule 69 (fator -> var .)
+    error           reduce using rule 69 (fator -> var .)
+    EPAREN          reduce using rule 69 (fator -> var .)
+    NEGACAO         reduce using rule 69 (fator -> var .)
+    NUM_INTEIRO     reduce using rule 69 (fator -> var .)
+    NUM_FLUTUANTE   reduce using rule 69 (fator -> var .)
+    NUM_CIENTIFICO  reduce using rule 69 (fator -> var .)
+
+
+state 61
+
+    (68) fator -> EPAREN expressao . DPAREN
+
+    DPAREN          shift and go to state 79
+
+
+state 62
+
+    (66) operador_multiplicacao -> MULTIPLICACAO .
+
+    EPAREN          reduce using rule 66 (operador_multiplicacao -> MULTIPLICACAO .)
+    ADICAO          reduce using rule 66 (operador_multiplicacao -> MULTIPLICACAO .)
+    SUBTRACAO       reduce using rule 66 (operador_multiplicacao -> MULTIPLICACAO .)
+    NEGACAO         reduce using rule 66 (operador_multiplicacao -> MULTIPLICACAO .)
+    ID              reduce using rule 66 (operador_multiplicacao -> MULTIPLICACAO .)
+    NUM_INTEIRO     reduce using rule 66 (operador_multiplicacao -> MULTIPLICACAO .)
+    NUM_FLUTUANTE   reduce using rule 66 (operador_multiplicacao -> MULTIPLICACAO .)
+    NUM_CIENTIFICO  reduce using rule 66 (operador_multiplicacao -> MULTIPLICACAO .)
+
+
+state 63
+
+    (67) operador_multiplicacao -> DIVISAO .
+
+    EPAREN          reduce using rule 67 (operador_multiplicacao -> DIVISAO .)
+    ADICAO          reduce using rule 67 (operador_multiplicacao -> DIVISAO .)
+    SUBTRACAO       reduce using rule 67 (operador_multiplicacao -> DIVISAO .)
+    NEGACAO         reduce using rule 67 (operador_multiplicacao -> DIVISAO .)
+    ID              reduce using rule 67 (operador_multiplicacao -> DIVISAO .)
+    NUM_INTEIRO     reduce using rule 67 (operador_multiplicacao -> DIVISAO .)
+    NUM_FLUTUANTE   reduce using rule 67 (operador_multiplicacao -> DIVISAO .)
+    NUM_CIENTIFICO  reduce using rule 67 (operador_multiplicacao -> DIVISAO .)
+
+
+state 64
+
+    (51) expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao . expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    ID              shift and go to state 37
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 80
+    fator                          shift and go to state 31
+    numero                         shift and go to state 32
+    operador_negacao               shift and go to state 27
+    chamada_funcao                 shift and go to state 42
+    var                            shift and go to state 60
+    operador_soma                  shift and go to state 38
+
+state 65
+
+    (64) operador_logico -> OULOGICO .
+
+    EPAREN          reduce using rule 64 (operador_logico -> OULOGICO .)
+    ADICAO          reduce using rule 64 (operador_logico -> OULOGICO .)
+    SUBTRACAO       reduce using rule 64 (operador_logico -> OULOGICO .)
+    NEGACAO         reduce using rule 64 (operador_logico -> OULOGICO .)
+    ID              reduce using rule 64 (operador_logico -> OULOGICO .)
+    NUM_INTEIRO     reduce using rule 64 (operador_logico -> OULOGICO .)
+    NUM_FLUTUANTE   reduce using rule 64 (operador_logico -> OULOGICO .)
+    NUM_CIENTIFICO  reduce using rule 64 (operador_logico -> OULOGICO .)
+
+
+state 66
+
+    (63) operador_logico -> ELOGICO .
+
+    EPAREN          reduce using rule 63 (operador_logico -> ELOGICO .)
+    ADICAO          reduce using rule 63 (operador_logico -> ELOGICO .)
+    SUBTRACAO       reduce using rule 63 (operador_logico -> ELOGICO .)
+    NEGACAO         reduce using rule 63 (operador_logico -> ELOGICO .)
+    ID              reduce using rule 63 (operador_logico -> ELOGICO .)
+    NUM_INTEIRO     reduce using rule 63 (operador_logico -> ELOGICO .)
+    NUM_FLUTUANTE   reduce using rule 63 (operador_logico -> ELOGICO .)
+    NUM_CIENTIFICO  reduce using rule 63 (operador_logico -> ELOGICO .)
+
+
+state 67
+
+    (45) expressao_logica -> expressao_logica operador_logico . expressao_simples
+    (46) expressao_simples -> . expressao_aditiva
+    (47) expressao_simples -> . expressao_simples operador_relacional expressao_aditiva
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    ID              shift and go to state 37
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    fator                          shift and go to state 31
+    numero                         shift and go to state 32
+    expressao_simples              shift and go to state 81
+    expressao_multiplicativa       shift and go to state 34
+    operador_negacao               shift and go to state 27
+    expressao_aditiva              shift and go to state 40
+    var                            shift and go to state 60
+    operador_soma                  shift and go to state 38
+    chamada_funcao                 shift and go to state 42
+
+state 68
+
+    (75) chamada_funcao -> ID EPAREN . lista_argumentos DPAREN
+    (76) lista_argumentos -> . lista_argumentos VIRGULA expressao
+    (77) lista_argumentos -> . expressao
+    (78) lista_argumentos -> . vazio
+    (42) expressao -> . expressao_logica
+    (43) expressao -> . atribuicao
+    (79) vazio -> .
+    (44) expressao_logica -> . expressao_simples
+    (45) expressao_logica -> . expressao_logica operador_logico expressao_simples
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (46) expressao_simples -> . expressao_aditiva
+    (47) expressao_simples -> . expressao_simples operador_relacional expressao_aditiva
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    DPAREN          reduce using rule 79 (vazio -> .)
+    VIRGULA         reduce using rule 79 (vazio -> .)
+    ID              shift and go to state 37
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    fator                          shift and go to state 31
+    vazio                          shift and go to state 82
+    numero                         shift and go to state 32
+    expressao_aditiva              shift and go to state 40
+    expressao_simples              shift and go to state 23
+    atribuicao                     shift and go to state 25
+    expressao_multiplicativa       shift and go to state 34
+    expressao_logica               shift and go to state 35
+    expressao                      shift and go to state 83
+    operador_negacao               shift and go to state 27
+    operador_soma                  shift and go to state 38
+    lista_argumentos               shift and go to state 84
+    var                            shift and go to state 28
+    chamada_funcao                 shift and go to state 42
+
+state 69
+
+    (53) expressao_unaria -> operador_soma fator .
+
+    MULTIPLICACAO   reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    DIVISAO         reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    ADICAO          reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    SUBTRACAO       reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    MENORQ          reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    MAIORQ          reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    IGUAL           reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    DESIGUAL        reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    MENORIGUAL      reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    MAIORIGUAL      reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    ELOGICO         reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    OULOGICO        reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    DPAREN          reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    FIM             reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    SE              reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    REPITA          reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    LEIA            reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    ESCREVA         reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    RETORNA         reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    error           reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    INTEIRO         reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    FLUTUANTE       reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    ID              reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    EPAREN          reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    NEGACAO         reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    NUM_INTEIRO     reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    NUM_FLUTUANTE   reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    NUM_CIENTIFICO  reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    VIRGULA         reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    DCOLCHE         reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+    $end            reduce using rule 53 (expressao_unaria -> operador_soma fator .)
+
+
+state 70
+
+    (49) expressao_aditiva -> expressao_aditiva operador_soma . expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    ID              shift and go to state 37
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    fator                          shift and go to state 31
+    numero                         shift and go to state 32
+    expressao_multiplicativa       shift and go to state 85
+    operador_negacao               shift and go to state 27
+    chamada_funcao                 shift and go to state 42
+    var                            shift and go to state 60
+    operador_soma                  shift and go to state 38
+
+state 71
+
+    (9) lista_variaveis -> lista_variaveis , . var
+    (11) var -> . ID
+    (12) var -> . ID indice
+
+    ID              shift and go to state 44
+
+    var                            shift and go to state 86
+
+state 72
+
+    (23) parametro -> tipo DOISPONTOS . ID
+
+    ID              shift and go to state 87
+
+
+state 73
+
+    (19) cabecalho -> ID EPAREN lista_parametros DPAREN . corpo FIM
+    (25) corpo -> . corpo acao
+    (26) corpo -> . vazio
+    (79) vazio -> .
+
+    FIM             reduce using rule 79 (vazio -> .)
+    SE              reduce using rule 79 (vazio -> .)
+    REPITA          reduce using rule 79 (vazio -> .)
+    LEIA            reduce using rule 79 (vazio -> .)
+    ESCREVA         reduce using rule 79 (vazio -> .)
+    RETORNA         reduce using rule 79 (vazio -> .)
+    error           reduce using rule 79 (vazio -> .)
+    INTEIRO         reduce using rule 79 (vazio -> .)
+    FLUTUANTE       reduce using rule 79 (vazio -> .)
+    ID              reduce using rule 79 (vazio -> .)
+    EPAREN          reduce using rule 79 (vazio -> .)
+    ADICAO          reduce using rule 79 (vazio -> .)
+    SUBTRACAO       reduce using rule 79 (vazio -> .)
+    NEGACAO         reduce using rule 79 (vazio -> .)
+    NUM_INTEIRO     reduce using rule 79 (vazio -> .)
+    NUM_FLUTUANTE   reduce using rule 79 (vazio -> .)
+    NUM_CIENTIFICO  reduce using rule 79 (vazio -> .)
+
+    corpo                          shift and go to state 89
+    vazio                          shift and go to state 88
+
+state 74
+
+    (20) lista_parametros -> lista_parametros VIRGULA . parametro
+    (23) parametro -> . tipo DOISPONTOS ID
+    (24) parametro -> . parametro ECOLCHE DCOLCHE
+    (15) tipo -> . INTEIRO
+    (16) tipo -> . FLUTUANTE
+
+    INTEIRO         shift and go to state 4
+    FLUTUANTE       shift and go to state 13
+
+    tipo                           shift and go to state 46
+    parametro                      shift and go to state 90
+
+state 75
+
+    (24) parametro -> parametro ECOLCHE . DCOLCHE
+
+    DCOLCHE         shift and go to state 91
+
+
+state 76
+
+    (13) indice -> indice ECOLCHE expressao . DCOLCHE
+
+    DCOLCHE         shift and go to state 92
+
+
+state 77
+
+    (14) indice -> ECOLCHE expressao DCOLCHE .
+
+    ECOLCHE         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    ATRIBUICAO      reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    MULTIPLICACAO   reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    DIVISAO         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    ADICAO          reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    SUBTRACAO       reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    MENORQ          reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    MAIORQ          reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    IGUAL           reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    DESIGUAL        reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    MENORIGUAL      reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    MAIORIGUAL      reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    ELOGICO         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    OULOGICO        reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    INTEIRO         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    FLUTUANTE       reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    ID              reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    $end            reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    DCOLCHE         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    DPAREN          reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    VIRGULA         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    FIM             reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    SE              reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    REPITA          reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    LEIA            reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    ESCREVA         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    RETORNA         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    error           reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    EPAREN          reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    NEGACAO         reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    NUM_INTEIRO     reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    NUM_FLUTUANTE   reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    NUM_CIENTIFICO  reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+    ,               reduce using rule 14 (indice -> ECOLCHE expressao DCOLCHE .)
+
+
+state 78
+
+    (47) expressao_simples -> expressao_simples operador_relacional expressao_aditiva .
+    (49) expressao_aditiva -> expressao_aditiva . operador_soma expressao_multiplicativa
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+
+  ! shift/reduce conflict for ADICAO resolved as shift
+  ! shift/reduce conflict for SUBTRACAO resolved as shift
+    MENORQ          reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    MAIORQ          reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    IGUAL           reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    DESIGUAL        reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    MENORIGUAL      reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    MAIORIGUAL      reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    ELOGICO         reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    OULOGICO        reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    DPAREN          reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    VIRGULA         reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    DCOLCHE         reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    INTEIRO         reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    FLUTUANTE       reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    ID              reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    $end            reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    FIM             reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    SE              reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    REPITA          reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    LEIA            reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    ESCREVA         reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    RETORNA         reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    error           reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    EPAREN          reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    NEGACAO         reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    NUM_INTEIRO     reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    NUM_FLUTUANTE   reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    NUM_CIENTIFICO  reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .)
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+
+  ! ADICAO          [ reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .) ]
+  ! SUBTRACAO       [ reduce using rule 47 (expressao_simples -> expressao_simples operador_relacional expressao_aditiva .) ]
+
+    operador_soma                  shift and go to state 70
+
+state 79
+
+    (68) fator -> EPAREN expressao DPAREN .
+
+    MULTIPLICACAO   reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    DIVISAO         reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    ADICAO          reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    SUBTRACAO       reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    MENORQ          reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    MAIORQ          reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    IGUAL           reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    DESIGUAL        reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    MENORIGUAL      reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    MAIORIGUAL      reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    ELOGICO         reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    OULOGICO        reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    INTEIRO         reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    FLUTUANTE       reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    ID              reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    $end            reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    DCOLCHE         reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    DPAREN          reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    VIRGULA         reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    FIM             reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    SE              reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    REPITA          reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    LEIA            reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    ESCREVA         reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    RETORNA         reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    error           reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    EPAREN          reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    NEGACAO         reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    NUM_INTEIRO     reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    NUM_FLUTUANTE   reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+    NUM_CIENTIFICO  reduce using rule 68 (fator -> EPAREN expressao DPAREN .)
+
+
+state 80
+
+    (51) expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .
+
+    MULTIPLICACAO   reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    DIVISAO         reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    ADICAO          reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    SUBTRACAO       reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    MENORQ          reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    MAIORQ          reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    IGUAL           reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    DESIGUAL        reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    MENORIGUAL      reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    MAIORIGUAL      reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    ELOGICO         reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    OULOGICO        reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    INTEIRO         reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    FLUTUANTE       reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    ID              reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    $end            reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    DCOLCHE         reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    DPAREN          reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    VIRGULA         reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    FIM             reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    SE              reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    REPITA          reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    LEIA            reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    ESCREVA         reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    RETORNA         reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    error           reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    EPAREN          reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    NEGACAO         reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    NUM_INTEIRO     reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    NUM_FLUTUANTE   reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+    NUM_CIENTIFICO  reduce using rule 51 (expressao_multiplicativa -> expressao_multiplicativa operador_multiplicacao expressao_unaria .)
+
+
+state 81
+
+    (45) expressao_logica -> expressao_logica operador_logico expressao_simples .
+    (47) expressao_simples -> expressao_simples . operador_relacional expressao_aditiva
+    (55) operador_relacional -> . MENORQ
+    (56) operador_relacional -> . MAIORQ
+    (57) operador_relacional -> . IGUAL
+    (58) operador_relacional -> . DESIGUAL
+    (59) operador_relacional -> . MENORIGUAL
+    (60) operador_relacional -> . MAIORIGUAL
+
+    ELOGICO         reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    OULOGICO        reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    FIM             reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    SE              reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    REPITA          reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    LEIA            reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    ESCREVA         reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    RETORNA         reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    error           reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    INTEIRO         reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    FLUTUANTE       reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    ID              reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    EPAREN          reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    ADICAO          reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    SUBTRACAO       reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    NEGACAO         reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    NUM_INTEIRO     reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    NUM_FLUTUANTE   reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    NUM_CIENTIFICO  reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    DPAREN          reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    VIRGULA         reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    $end            reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    DCOLCHE         reduce using rule 45 (expressao_logica -> expressao_logica operador_logico expressao_simples .)
+    MENORQ          shift and go to state 57
+    MAIORQ          shift and go to state 52
+    IGUAL           shift and go to state 54
+    DESIGUAL        shift and go to state 56
+    MENORIGUAL      shift and go to state 58
+    MAIORIGUAL      shift and go to state 53
+
+    operador_relacional            shift and go to state 55
+
+state 82
+
+    (78) lista_argumentos -> vazio .
+
+    DPAREN          reduce using rule 78 (lista_argumentos -> vazio .)
+    VIRGULA         reduce using rule 78 (lista_argumentos -> vazio .)
+
+
+state 83
+
+    (77) lista_argumentos -> expressao .
+
+    DPAREN          reduce using rule 77 (lista_argumentos -> expressao .)
+    VIRGULA         reduce using rule 77 (lista_argumentos -> expressao .)
+
+
+state 84
+
+    (75) chamada_funcao -> ID EPAREN lista_argumentos . DPAREN
+    (76) lista_argumentos -> lista_argumentos . VIRGULA expressao
+
+    DPAREN          shift and go to state 93
+    VIRGULA         shift and go to state 94
+
+
+state 85
+
+    (49) expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .
+    (51) expressao_multiplicativa -> expressao_multiplicativa . operador_multiplicacao expressao_unaria
+    (66) operador_multiplicacao -> . MULTIPLICACAO
+    (67) operador_multiplicacao -> . DIVISAO
+
+    ADICAO          reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    SUBTRACAO       reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    MENORQ          reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    MAIORQ          reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    IGUAL           reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    DESIGUAL        reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    MENORIGUAL      reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    MAIORIGUAL      reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    ELOGICO         reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    OULOGICO        reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    DPAREN          reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    VIRGULA         reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    INTEIRO         reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    FLUTUANTE       reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    ID              reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    $end            reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    DCOLCHE         reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    FIM             reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    SE              reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    REPITA          reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    LEIA            reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    ESCREVA         reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    RETORNA         reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    error           reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    EPAREN          reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    NEGACAO         reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    NUM_INTEIRO     reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    NUM_FLUTUANTE   reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    NUM_CIENTIFICO  reduce using rule 49 (expressao_aditiva -> expressao_aditiva operador_soma expressao_multiplicativa .)
+    MULTIPLICACAO   shift and go to state 62
+    DIVISAO         shift and go to state 63
+
+    operador_multiplicacao         shift and go to state 64
+
+state 86
+
+    (9) lista_variaveis -> lista_variaveis , var .
+
+    ,               reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    INTEIRO         reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    FLUTUANTE       reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    ID              reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    $end            reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    FIM             reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    SE              reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    REPITA          reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    LEIA            reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    ESCREVA         reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    RETORNA         reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    error           reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    EPAREN          reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    ADICAO          reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    SUBTRACAO       reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    NEGACAO         reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    NUM_INTEIRO     reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    NUM_FLUTUANTE   reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+    NUM_CIENTIFICO  reduce using rule 9 (lista_variaveis -> lista_variaveis , var .)
+
+
+state 87
+
+    (23) parametro -> tipo DOISPONTOS ID .
+
+    ECOLCHE         reduce using rule 23 (parametro -> tipo DOISPONTOS ID .)
+    DPAREN          reduce using rule 23 (parametro -> tipo DOISPONTOS ID .)
+    VIRGULA         reduce using rule 23 (parametro -> tipo DOISPONTOS ID .)
+
+
+state 88
+
+    (26) corpo -> vazio .
+
+    FIM             reduce using rule 26 (corpo -> vazio .)
+    SE              reduce using rule 26 (corpo -> vazio .)
+    REPITA          reduce using rule 26 (corpo -> vazio .)
+    LEIA            reduce using rule 26 (corpo -> vazio .)
+    ESCREVA         reduce using rule 26 (corpo -> vazio .)
+    RETORNA         reduce using rule 26 (corpo -> vazio .)
+    error           reduce using rule 26 (corpo -> vazio .)
+    INTEIRO         reduce using rule 26 (corpo -> vazio .)
+    FLUTUANTE       reduce using rule 26 (corpo -> vazio .)
+    ID              reduce using rule 26 (corpo -> vazio .)
+    EPAREN          reduce using rule 26 (corpo -> vazio .)
+    ADICAO          reduce using rule 26 (corpo -> vazio .)
+    SUBTRACAO       reduce using rule 26 (corpo -> vazio .)
+    NEGACAO         reduce using rule 26 (corpo -> vazio .)
+    NUM_INTEIRO     reduce using rule 26 (corpo -> vazio .)
+    NUM_FLUTUANTE   reduce using rule 26 (corpo -> vazio .)
+    NUM_CIENTIFICO  reduce using rule 26 (corpo -> vazio .)
+
+
+state 89
+
+    (19) cabecalho -> ID EPAREN lista_parametros DPAREN corpo . FIM
+    (25) corpo -> corpo . acao
+    (27) acao -> . expressao
+    (28) acao -> . declaracao_variaveis
+    (29) acao -> . SE
+    (30) acao -> . REPITA
+    (31) acao -> . LEIA
+    (32) acao -> . ESCREVA
+    (33) acao -> . RETORNA
+    (34) acao -> . error
+    (42) expressao -> . expressao_logica
+    (43) expressao -> . atribuicao
+    (7) declaracao_variaveis -> . tipo DOISPONTOS lista_variaveis
+    (44) expressao_logica -> . expressao_simples
+    (45) expressao_logica -> . expressao_logica operador_logico expressao_simples
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (15) tipo -> . INTEIRO
+    (16) tipo -> . FLUTUANTE
+    (46) expressao_simples -> . expressao_aditiva
+    (47) expressao_simples -> . expressao_simples operador_relacional expressao_aditiva
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    FIM             shift and go to state 104
+    SE              shift and go to state 98
+    REPITA          shift and go to state 101
+    LEIA            shift and go to state 99
+    ESCREVA         shift and go to state 103
+    RETORNA         shift and go to state 102
+    error           shift and go to state 95
+    INTEIRO         shift and go to state 4
+    FLUTUANTE       shift and go to state 13
+    ID              shift and go to state 37
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_simples              shift and go to state 23
+    atribuicao                     shift and go to state 25
+    expressao                      shift and go to state 96
+    operador_negacao               shift and go to state 27
+    chamada_funcao                 shift and go to state 42
+    var                            shift and go to state 28
+    acao                           shift and go to state 97
+    expressao_unaria               shift and go to state 30
+    declaracao_variaveis           shift and go to state 105
+    numero                         shift and go to state 32
+    fator                          shift and go to state 31
+    expressao_multiplicativa       shift and go to state 34
+    expressao_logica               shift and go to state 35
+    tipo                           shift and go to state 100
+    expressao_aditiva              shift and go to state 40
+    operador_soma                  shift and go to state 38
+
+state 90
+
+    (20) lista_parametros -> lista_parametros VIRGULA parametro .
+    (24) parametro -> parametro . ECOLCHE DCOLCHE
+
+    DPAREN          reduce using rule 20 (lista_parametros -> lista_parametros VIRGULA parametro .)
+    VIRGULA         reduce using rule 20 (lista_parametros -> lista_parametros VIRGULA parametro .)
+    ECOLCHE         shift and go to state 75
+
+
+state 91
+
+    (24) parametro -> parametro ECOLCHE DCOLCHE .
+
+    ECOLCHE         reduce using rule 24 (parametro -> parametro ECOLCHE DCOLCHE .)
+    DPAREN          reduce using rule 24 (parametro -> parametro ECOLCHE DCOLCHE .)
+    VIRGULA         reduce using rule 24 (parametro -> parametro ECOLCHE DCOLCHE .)
+
+
+state 92
+
+    (13) indice -> indice ECOLCHE expressao DCOLCHE .
+
+    ECOLCHE         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    ATRIBUICAO      reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    MULTIPLICACAO   reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    DIVISAO         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    ADICAO          reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    SUBTRACAO       reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    MENORQ          reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    MAIORQ          reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    IGUAL           reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    DESIGUAL        reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    MENORIGUAL      reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    MAIORIGUAL      reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    ELOGICO         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    OULOGICO        reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    INTEIRO         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    FLUTUANTE       reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    ID              reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    $end            reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    DCOLCHE         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    DPAREN          reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    VIRGULA         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    FIM             reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    SE              reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    REPITA          reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    LEIA            reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    ESCREVA         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    RETORNA         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    error           reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    EPAREN          reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    NEGACAO         reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    NUM_INTEIRO     reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    NUM_FLUTUANTE   reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    NUM_CIENTIFICO  reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+    ,               reduce using rule 13 (indice -> indice ECOLCHE expressao DCOLCHE .)
+
+
+state 93
+
+    (75) chamada_funcao -> ID EPAREN lista_argumentos DPAREN .
+
+    MULTIPLICACAO   reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    DIVISAO         reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    ADICAO          reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    SUBTRACAO       reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    MENORQ          reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    MAIORQ          reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    IGUAL           reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    DESIGUAL        reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    MENORIGUAL      reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    MAIORIGUAL      reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    ELOGICO         reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    OULOGICO        reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    DPAREN          reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    DCOLCHE         reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    INTEIRO         reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    FLUTUANTE       reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    ID              reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    $end            reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    VIRGULA         reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    FIM             reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    SE              reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    REPITA          reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    LEIA            reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    ESCREVA         reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    RETORNA         reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    error           reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    EPAREN          reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    NEGACAO         reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    NUM_INTEIRO     reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    NUM_FLUTUANTE   reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+    NUM_CIENTIFICO  reduce using rule 75 (chamada_funcao -> ID EPAREN lista_argumentos DPAREN .)
+
+
+state 94
+
+    (76) lista_argumentos -> lista_argumentos VIRGULA . expressao
+    (42) expressao -> . expressao_logica
+    (43) expressao -> . atribuicao
+    (44) expressao_logica -> . expressao_simples
+    (45) expressao_logica -> . expressao_logica operador_logico expressao_simples
+    (38) atribuicao -> . var ATRIBUICAO expressao
+    (46) expressao_simples -> . expressao_aditiva
+    (47) expressao_simples -> . expressao_simples operador_relacional expressao_aditiva
+    (11) var -> . ID
+    (12) var -> . ID indice
+    (48) expressao_aditiva -> . expressao_multiplicativa
+    (49) expressao_aditiva -> . expressao_aditiva operador_soma expressao_multiplicativa
+    (50) expressao_multiplicativa -> . expressao_unaria
+    (51) expressao_multiplicativa -> . expressao_multiplicativa operador_multiplicacao expressao_unaria
+    (52) expressao_unaria -> . fator
+    (53) expressao_unaria -> . operador_soma fator
+    (54) expressao_unaria -> . operador_negacao fator
+    (68) fator -> . EPAREN expressao DPAREN
+    (69) fator -> . var
+    (70) fator -> . chamada_funcao
+    (71) fator -> . numero
+    (61) operador_soma -> . ADICAO
+    (62) operador_soma -> . SUBTRACAO
+    (65) operador_negacao -> . NEGACAO
+    (75) chamada_funcao -> . ID EPAREN lista_argumentos DPAREN
+    (72) numero -> . NUM_INTEIRO
+    (73) numero -> . NUM_FLUTUANTE
+    (74) numero -> . NUM_CIENTIFICO
+
+    ID              shift and go to state 37
+    EPAREN          shift and go to state 29
+    ADICAO          shift and go to state 33
+    SUBTRACAO       shift and go to state 41
+    NEGACAO         shift and go to state 24
+    NUM_INTEIRO     shift and go to state 22
+    NUM_FLUTUANTE   shift and go to state 36
+    NUM_CIENTIFICO  shift and go to state 39
+
+    expressao_unaria               shift and go to state 30
+    expressao_simples              shift and go to state 23
+    numero                         shift and go to state 32
+    expressao_aditiva              shift and go to state 40
+    fator                          shift and go to state 31
+    atribuicao                     shift and go to state 25
+    expressao_multiplicativa       shift and go to state 34
+    expressao_logica               shift and go to state 35
+    expressao                      shift and go to state 106
+    operador_negacao               shift and go to state 27
+    operador_soma                  shift and go to state 38
+    var                            shift and go to state 28
+    chamada_funcao                 shift and go to state 42
+
+state 95
+
+    (34) acao -> error .
+
+    FIM             reduce using rule 34 (acao -> error .)
+    SE              reduce using rule 34 (acao -> error .)
+    REPITA          reduce using rule 34 (acao -> error .)
+    LEIA            reduce using rule 34 (acao -> error .)
+    ESCREVA         reduce using rule 34 (acao -> error .)
+    RETORNA         reduce using rule 34 (acao -> error .)
+    error           reduce using rule 34 (acao -> error .)
+    INTEIRO         reduce using rule 34 (acao -> error .)
+    FLUTUANTE       reduce using rule 34 (acao -> error .)
+    ID              reduce using rule 34 (acao -> error .)
+    EPAREN          reduce using rule 34 (acao -> error .)
+    ADICAO          reduce using rule 34 (acao -> error .)
+    SUBTRACAO       reduce using rule 34 (acao -> error .)
+    NEGACAO         reduce using rule 34 (acao -> error .)
+    NUM_INTEIRO     reduce using rule 34 (acao -> error .)
+    NUM_FLUTUANTE   reduce using rule 34 (acao -> error .)
+    NUM_CIENTIFICO  reduce using rule 34 (acao -> error .)
+
+
+state 96
+
+    (27) acao -> expressao .
+
+    FIM             reduce using rule 27 (acao -> expressao .)
+    SE              reduce using rule 27 (acao -> expressao .)
+    REPITA          reduce using rule 27 (acao -> expressao .)
+    LEIA            reduce using rule 27 (acao -> expressao .)
+    ESCREVA         reduce using rule 27 (acao -> expressao .)
+    RETORNA         reduce using rule 27 (acao -> expressao .)
+    error           reduce using rule 27 (acao -> expressao .)
+    INTEIRO         reduce using rule 27 (acao -> expressao .)
+    FLUTUANTE       reduce using rule 27 (acao -> expressao .)
+    ID              reduce using rule 27 (acao -> expressao .)
+    EPAREN          reduce using rule 27 (acao -> expressao .)
+    ADICAO          reduce using rule 27 (acao -> expressao .)
+    SUBTRACAO       reduce using rule 27 (acao -> expressao .)
+    NEGACAO         reduce using rule 27 (acao -> expressao .)
+    NUM_INTEIRO     reduce using rule 27 (acao -> expressao .)
+    NUM_FLUTUANTE   reduce using rule 27 (acao -> expressao .)
+    NUM_CIENTIFICO  reduce using rule 27 (acao -> expressao .)
+
+
+state 97
+
+    (25) corpo -> corpo acao .
+
+    FIM             reduce using rule 25 (corpo -> corpo acao .)
+    SE              reduce using rule 25 (corpo -> corpo acao .)
+    REPITA          reduce using rule 25 (corpo -> corpo acao .)
+    LEIA            reduce using rule 25 (corpo -> corpo acao .)
+    ESCREVA         reduce using rule 25 (corpo -> corpo acao .)
+    RETORNA         reduce using rule 25 (corpo -> corpo acao .)
+    error           reduce using rule 25 (corpo -> corpo acao .)
+    INTEIRO         reduce using rule 25 (corpo -> corpo acao .)
+    FLUTUANTE       reduce using rule 25 (corpo -> corpo acao .)
+    ID              reduce using rule 25 (corpo -> corpo acao .)
+    EPAREN          reduce using rule 25 (corpo -> corpo acao .)
+    ADICAO          reduce using rule 25 (corpo -> corpo acao .)
+    SUBTRACAO       reduce using rule 25 (corpo -> corpo acao .)
+    NEGACAO         reduce using rule 25 (corpo -> corpo acao .)
+    NUM_INTEIRO     reduce using rule 25 (corpo -> corpo acao .)
+    NUM_FLUTUANTE   reduce using rule 25 (corpo -> corpo acao .)
+    NUM_CIENTIFICO  reduce using rule 25 (corpo -> corpo acao .)
+
+
+state 98
+
+    (29) acao -> SE .
+
+    FIM             reduce using rule 29 (acao -> SE .)
+    SE              reduce using rule 29 (acao -> SE .)
+    REPITA          reduce using rule 29 (acao -> SE .)
+    LEIA            reduce using rule 29 (acao -> SE .)
+    ESCREVA         reduce using rule 29 (acao -> SE .)
+    RETORNA         reduce using rule 29 (acao -> SE .)
+    error           reduce using rule 29 (acao -> SE .)
+    INTEIRO         reduce using rule 29 (acao -> SE .)
+    FLUTUANTE       reduce using rule 29 (acao -> SE .)
+    ID              reduce using rule 29 (acao -> SE .)
+    EPAREN          reduce using rule 29 (acao -> SE .)
+    ADICAO          reduce using rule 29 (acao -> SE .)
+    SUBTRACAO       reduce using rule 29 (acao -> SE .)
+    NEGACAO         reduce using rule 29 (acao -> SE .)
+    NUM_INTEIRO     reduce using rule 29 (acao -> SE .)
+    NUM_FLUTUANTE   reduce using rule 29 (acao -> SE .)
+    NUM_CIENTIFICO  reduce using rule 29 (acao -> SE .)
+
+
+state 99
+
+    (31) acao -> LEIA .
+
+    FIM             reduce using rule 31 (acao -> LEIA .)
+    SE              reduce using rule 31 (acao -> LEIA .)
+    REPITA          reduce using rule 31 (acao -> LEIA .)
+    LEIA            reduce using rule 31 (acao -> LEIA .)
+    ESCREVA         reduce using rule 31 (acao -> LEIA .)
+    RETORNA         reduce using rule 31 (acao -> LEIA .)
+    error           reduce using rule 31 (acao -> LEIA .)
+    INTEIRO         reduce using rule 31 (acao -> LEIA .)
+    FLUTUANTE       reduce using rule 31 (acao -> LEIA .)
+    ID              reduce using rule 31 (acao -> LEIA .)
+    EPAREN          reduce using rule 31 (acao -> LEIA .)
+    ADICAO          reduce using rule 31 (acao -> LEIA .)
+    SUBTRACAO       reduce using rule 31 (acao -> LEIA .)
+    NEGACAO         reduce using rule 31 (acao -> LEIA .)
+    NUM_INTEIRO     reduce using rule 31 (acao -> LEIA .)
+    NUM_FLUTUANTE   reduce using rule 31 (acao -> LEIA .)
+    NUM_CIENTIFICO  reduce using rule 31 (acao -> LEIA .)
+
+
+state 100
+
+    (7) declaracao_variaveis -> tipo . DOISPONTOS lista_variaveis
+
+    DOISPONTOS      shift and go to state 18
+
+
+state 101
+
+    (30) acao -> REPITA .
+
+    FIM             reduce using rule 30 (acao -> REPITA .)
+    SE              reduce using rule 30 (acao -> REPITA .)
+    REPITA          reduce using rule 30 (acao -> REPITA .)
+    LEIA            reduce using rule 30 (acao -> REPITA .)
+    ESCREVA         reduce using rule 30 (acao -> REPITA .)
+    RETORNA         reduce using rule 30 (acao -> REPITA .)
+    error           reduce using rule 30 (acao -> REPITA .)
+    INTEIRO         reduce using rule 30 (acao -> REPITA .)
+    FLUTUANTE       reduce using rule 30 (acao -> REPITA .)
+    ID              reduce using rule 30 (acao -> REPITA .)
+    EPAREN          reduce using rule 30 (acao -> REPITA .)
+    ADICAO          reduce using rule 30 (acao -> REPITA .)
+    SUBTRACAO       reduce using rule 30 (acao -> REPITA .)
+    NEGACAO         reduce using rule 30 (acao -> REPITA .)
+    NUM_INTEIRO     reduce using rule 30 (acao -> REPITA .)
+    NUM_FLUTUANTE   reduce using rule 30 (acao -> REPITA .)
+    NUM_CIENTIFICO  reduce using rule 30 (acao -> REPITA .)
+
+
+state 102
+
+    (33) acao -> RETORNA .
+
+    FIM             reduce using rule 33 (acao -> RETORNA .)
+    SE              reduce using rule 33 (acao -> RETORNA .)
+    REPITA          reduce using rule 33 (acao -> RETORNA .)
+    LEIA            reduce using rule 33 (acao -> RETORNA .)
+    ESCREVA         reduce using rule 33 (acao -> RETORNA .)
+    RETORNA         reduce using rule 33 (acao -> RETORNA .)
+    error           reduce using rule 33 (acao -> RETORNA .)
+    INTEIRO         reduce using rule 33 (acao -> RETORNA .)
+    FLUTUANTE       reduce using rule 33 (acao -> RETORNA .)
+    ID              reduce using rule 33 (acao -> RETORNA .)
+    EPAREN          reduce using rule 33 (acao -> RETORNA .)
+    ADICAO          reduce using rule 33 (acao -> RETORNA .)
+    SUBTRACAO       reduce using rule 33 (acao -> RETORNA .)
+    NEGACAO         reduce using rule 33 (acao -> RETORNA .)
+    NUM_INTEIRO     reduce using rule 33 (acao -> RETORNA .)
+    NUM_FLUTUANTE   reduce using rule 33 (acao -> RETORNA .)
+    NUM_CIENTIFICO  reduce using rule 33 (acao -> RETORNA .)
+
+
+state 103
+
+    (32) acao -> ESCREVA .
+
+    FIM             reduce using rule 32 (acao -> ESCREVA .)
+    SE              reduce using rule 32 (acao -> ESCREVA .)
+    REPITA          reduce using rule 32 (acao -> ESCREVA .)
+    LEIA            reduce using rule 32 (acao -> ESCREVA .)
+    ESCREVA         reduce using rule 32 (acao -> ESCREVA .)
+    RETORNA         reduce using rule 32 (acao -> ESCREVA .)
+    error           reduce using rule 32 (acao -> ESCREVA .)
+    INTEIRO         reduce using rule 32 (acao -> ESCREVA .)
+    FLUTUANTE       reduce using rule 32 (acao -> ESCREVA .)
+    ID              reduce using rule 32 (acao -> ESCREVA .)
+    EPAREN          reduce using rule 32 (acao -> ESCREVA .)
+    ADICAO          reduce using rule 32 (acao -> ESCREVA .)
+    SUBTRACAO       reduce using rule 32 (acao -> ESCREVA .)
+    NEGACAO         reduce using rule 32 (acao -> ESCREVA .)
+    NUM_INTEIRO     reduce using rule 32 (acao -> ESCREVA .)
+    NUM_FLUTUANTE   reduce using rule 32 (acao -> ESCREVA .)
+    NUM_CIENTIFICO  reduce using rule 32 (acao -> ESCREVA .)
+
+
+state 104
+
+    (19) cabecalho -> ID EPAREN lista_parametros DPAREN corpo FIM .
+
+    INTEIRO         reduce using rule 19 (cabecalho -> ID EPAREN lista_parametros DPAREN corpo FIM .)
+    FLUTUANTE       reduce using rule 19 (cabecalho -> ID EPAREN lista_parametros DPAREN corpo FIM .)
+    ID              reduce using rule 19 (cabecalho -> ID EPAREN lista_parametros DPAREN corpo FIM .)
+    $end            reduce using rule 19 (cabecalho -> ID EPAREN lista_parametros DPAREN corpo FIM .)
+
+
+state 105
+
+    (28) acao -> declaracao_variaveis .
+
+    FIM             reduce using rule 28 (acao -> declaracao_variaveis .)
+    SE              reduce using rule 28 (acao -> declaracao_variaveis .)
+    REPITA          reduce using rule 28 (acao -> declaracao_variaveis .)
+    LEIA            reduce using rule 28 (acao -> declaracao_variaveis .)
+    ESCREVA         reduce using rule 28 (acao -> declaracao_variaveis .)
+    RETORNA         reduce using rule 28 (acao -> declaracao_variaveis .)
+    error           reduce using rule 28 (acao -> declaracao_variaveis .)
+    INTEIRO         reduce using rule 28 (acao -> declaracao_variaveis .)
+    FLUTUANTE       reduce using rule 28 (acao -> declaracao_variaveis .)
+    ID              reduce using rule 28 (acao -> declaracao_variaveis .)
+    EPAREN          reduce using rule 28 (acao -> declaracao_variaveis .)
+    ADICAO          reduce using rule 28 (acao -> declaracao_variaveis .)
+    SUBTRACAO       reduce using rule 28 (acao -> declaracao_variaveis .)
+    NEGACAO         reduce using rule 28 (acao -> declaracao_variaveis .)
+    NUM_INTEIRO     reduce using rule 28 (acao -> declaracao_variaveis .)
+    NUM_FLUTUANTE   reduce using rule 28 (acao -> declaracao_variaveis .)
+    NUM_CIENTIFICO  reduce using rule 28 (acao -> declaracao_variaveis .)
+
+
+state 106
+
+    (76) lista_argumentos -> lista_argumentos VIRGULA expressao .
+
+    DPAREN          reduce using rule 76 (lista_argumentos -> lista_argumentos VIRGULA expressao .)
+    VIRGULA         reduce using rule 76 (lista_argumentos -> lista_argumentos VIRGULA expressao .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for EPAREN in state 37 resolved as shift
+WARNING: shift/reduce conflict for ADICAO in state 40 resolved as shift
+WARNING: shift/reduce conflict for SUBTRACAO in state 40 resolved as shift
+WARNING: shift/reduce conflict for ADICAO in state 78 resolved as shift
+WARNING: shift/reduce conflict for SUBTRACAO in state 78 resolved as shift
