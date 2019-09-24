@@ -12,23 +12,25 @@ from lex_tzora import tokens
 
 
 def p_programa (p):
-    'programa : lista_declaracoes'
-    #p[0] = p[1]
+		'''programa : lista_declaracoes'''
+    p[0] = Node("programa", children=[p[1]])
+		# Gera grafo
+		DotExporter(p[0]).to_picture("grafo.png")
 
 def p_lista_declaracoes (p):
     '''lista_declaracoes : lista_declaracoes declaracao
                          | declaracao '''
-    #if (len(p) == 2):
-    #    p[0] = p[1]
-    #elif (len(p) == 3):
-    #    p[0] = p [1] p[2]
+    if (len(p) == 2):
+        p[0] = Node("lista_declaracoes", children=[p[1]])
+    elif (len(p) == 3):
+        p[0] = Node("lista_declaracoes", children=[p[1], p[2]])
 
 def p_declaracao (p):
     '''declaracao : declaracao_variaveis
                   | inicializacao_variaveis
                   | declaracao_funcao
     '''
-    #p[0] = p[1]
+    p[0] = Node("lista_declaracoes")
 
 def p_declaracao_variaveis (p):
     'declaracao_variaveis : tipo DOISPONTOS lista_variaveis'
@@ -202,6 +204,7 @@ def p_numero (p):
 							| NUM_FLUTUANTE
 							| NUM_CIENTIFICO
     '''
+		#p[0] = Node(str(p[1]))
 
 def p_chamada_funcao (p):
     '''chamada_funcao : ID EPAREN lista_argumentos DPAREN
@@ -230,6 +233,7 @@ data = arq.read()
 
 # Build the parser
 parser = yacc.yacc()
+
 
 try:
     s = input(data)
