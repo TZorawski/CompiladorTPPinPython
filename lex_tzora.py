@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ------------------------------------------------------------
 # lex.py
 # Analizador Lexico do compilador para a linguagem T++

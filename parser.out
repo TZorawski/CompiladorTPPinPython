@@ -1,0 +1,104 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    DCOLCHE
+    MAIORIGUAL
+    FLUTUANTE
+    DESIGUAL
+    NUM_CIENTIFICO
+    DOISPONTOS
+    IGUAL
+    ADICAO
+    ECOLCHE
+    VIRGULA
+    ENTAO
+    NUM_FLUTUANTE
+    LEIA
+    NUM_INTEIRO
+    INTEIRO
+    SE
+    EPAREN
+    RETORNA
+    MULTIPLICACAO
+    ATE
+    DPAREN
+    SUBTRACAO
+    DIVISAO
+    REPITA
+    ELOGICO
+    ESCREVA
+    MAIORQ
+    MENORIGUAL
+    MENORQ
+    FIM
+    SENAO
+    NEGACAO
+    OULOGICO
+    ATRIBUICAO
+    ID
+
+Grammar
+
+Rule 0     S' -> vazio
+Rule 1     vazio -> <empty>
+
+Terminals, with rules where they appear
+
+ADICAO               : 
+ATE                  : 
+ATRIBUICAO           : 
+DCOLCHE              : 
+DESIGUAL             : 
+DIVISAO              : 
+DOISPONTOS           : 
+DPAREN               : 
+ECOLCHE              : 
+ELOGICO              : 
+ENTAO                : 
+EPAREN               : 
+ESCREVA              : 
+FIM                  : 
+FLUTUANTE            : 
+ID                   : 
+IGUAL                : 
+INTEIRO              : 
+LEIA                 : 
+MAIORIGUAL           : 
+MAIORQ               : 
+MENORIGUAL           : 
+MENORQ               : 
+MULTIPLICACAO        : 
+NEGACAO              : 
+NUM_CIENTIFICO       : 
+NUM_FLUTUANTE        : 
+NUM_INTEIRO          : 
+OULOGICO             : 
+REPITA               : 
+RETORNA              : 
+SE                   : 
+SENAO                : 
+SUBTRACAO            : 
+VIRGULA              : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+vazio                : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . vazio
+    (1) vazio -> .
+
+    $end            reduce using rule 1 (vazio -> .)
+
+    vazio                          shift and go to state 1
+
+state 1
+
+    (0) S' -> vazio .
+
+
