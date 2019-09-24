@@ -2,6 +2,7 @@
 
 ### PLY Lex e Yacc
 http://www.dabeaz.com/ply/ply.html#ply_nn23
+Construção léxica: https://www.dabeaz.com/ply/ply.html#ply_nn4
 
 ### Compilador de exemplo
 http://tsemsb.blogspot.com/2010/04/cgcc-gcode-with-c-constructs.html
