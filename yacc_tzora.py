@@ -12,10 +12,10 @@ from lex_tzora import tokens
 
 
 def p_programa (p):
-		'''programa : lista_declaracoes'''
-    p[0] = Node("programa", children=[p[1]])
-		# Gera grafo
-		DotExporter(p[0]).to_picture("grafo.png")
+	'''programa : lista_declaracoes'''
+	p[0] = Node("programa", children=[p[1]])
+	# Gera grafo
+	DotExporter(p[0]).to_picture("grafo.png")
 
 def p_lista_declaracoes (p):
     '''lista_declaracoes : lista_declaracoes declaracao
@@ -233,11 +233,15 @@ data = arq.read()
 
 # Build the parser
 parser = yacc.yacc()
+arq = open(sys.argv[1], 'r', encoding="utf8")
+data = arq.read()
+
+#try:
+#    s = input(data)
+#except EOFError:
+#    print("Erro na abertura do arquivo")
+
+result = parser.parse(data)
+print(result)
 
 
-try:
-    s = input(data)
-except EOFError:
-    print("Erro na abertura do arquivo")
-
-result = parser.parse(s)
