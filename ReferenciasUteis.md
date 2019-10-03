@@ -9,3 +9,7 @@ http://tsemsb.blogspot.com/2010/04/cgcc-gcode-with-c-constructs.html
 
 ### Lista de regras da BNF
 https://docs.google.com/document/d/1oYX-5ipzL_izj_hO8s7axuo2OyA279YEhnAItgXzXAQ/edit
+
+### Any tree
+https://anytree.readthedocs.io/en/latest/
+Nós: https://anytree.readthedocs.io/en/latest/api/anytree.node.html

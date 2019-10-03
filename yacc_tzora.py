@@ -4,6 +4,8 @@
 """
 import ply.yacc as yacc
 import sys
+from anytree import Node, RenderTree
+from anytree.exporter import DotExporter
  
 # Get the token map from the lexer.  This is required.
 from lex_tzora import tokens
@@ -151,32 +153,32 @@ def p_expressao_aditiva (p):
 
 def p_expressao_multiplicativa (p):
     '''expressao_multiplicativa : expressao_unaria
-																| expressao_multiplicativa operador_multiplicacao expressao_unaria
+								| expressao_multiplicativa operador_multiplicacao expressao_unaria
     '''
 
 def p_expressao_unaria (p):
     '''expressao_unaria : fator
-												| operador_soma fator
-												| operador_negacao fator
+                        | operador_soma fator
+                        | operador_negacao fator
     '''
 
 def p_operador_relacional (p):
     '''operador_relacional : MENORQ
-													 | MAIORQ 
-													 | IGUAL 
-													 | DESIGUAL 
-													 | MENORIGUAL
-													 | MAIORIGUAL
+                            | MAIORQ 
+                            | IGUAL 
+                            | DESIGUAL 
+                            | MENORIGUAL
+                            | MAIORIGUAL
     '''
 
 def p_operador_soma (p):
     '''operador_soma : ADICAO
-										 | SUBTRACAO
+					 | SUBTRACAO
     '''
 
 def p_operador_logico (p):
     '''operador_logico : ELOGICO
-											 | OULOGICO
+                        | OULOGICO
     '''
 
 def p_operador_negacao (p):
