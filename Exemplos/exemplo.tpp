@@ -2,13 +2,13 @@ inteiro: m, n
 
 inteiro somaIntervaloNM (inteiro: m, n)
     inteiro: soma
-    se m < n então {apenas calcula se m > n}
+    se m < n então
         soma := m
         repita
             m := m + 1
             soma := soma + m
         até m = n
-    senão {se m < n retorna zero}
+    senão
         retorna(0)
     fim
     retorna(soma)
@@ -19,11 +19,3 @@ inteiro principal ()
     leia(n)
     escreva(somaIntervaloNM(m, n))
 fim
-
-{
-    {
-        a
-        b
-        c
-    }
-}
