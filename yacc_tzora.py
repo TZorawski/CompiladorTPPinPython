@@ -56,9 +56,9 @@ def p_var (p):
            | ID indice
     '''
     if (len(p) == 2):
-        p[0] = Node("var", children=[p[1]])
+        p[0] = Node("var", valor=[p[1]])
     elif (len(p) == 3):
-        p[0] = Node("var", children=[p[1], p[2]])
+        p[0] = Node("var", children=[p[2]], valor=[p[1]])
 
 def p_indice (p):
     '''indice : indice ECOLCHE expressao DCOLCHE
@@ -71,20 +71,23 @@ def p_indice (p):
 
 def p_tipo (p):
     '''tipo : INTEIRO
-              | FLUTUANTE
+            | FLUTUANTE
     '''
-    p[0] = Node("tipo", children=[p[1]])
+    p[0] = Node("tipo", valor=[p[1]])
 
 def p_declaracao_funcao (p):
     '''declaracao_funcao : tipo cabecalho 
 												 | cabecalho
     '''
-    p[0] = Node("declaracao_funcao", children=[p[1]])
+    if (len(p) == 3):
+        p[0] = Node("declaracao_funcao", children=[p[1], p[2]])
+    elif (len(p) == 2):
+        p[0] = Node("declaracao_funcao", children=[p[1]])
 
 def p_cabecalho (p):
     '''cabecalho : ID EPAREN lista_parametros DPAREN corpo FIM
     '''
-    p[0] = Node("cabecalho", children=[p[1], p[3], p[5]])
+    p[0] = Node("cabecalho", children=[p[3], p[5]], valor=[p[1]])
 
 def p_lista_parametros (p):
     '''lista_parametros : lista_parametros VIRGULA parametro
@@ -92,16 +95,16 @@ def p_lista_parametros (p):
 												| vazio
     '''
     if (len(p) == 4):
-        p[0] = Node("lista_parametros", children=[p[1], p[3]])
+        p[0] = Node("lista_parametros", children=[p[1]], valor=[p[3]])
     elif (len(p) == 2):
-        p[0] = Node("lista_parametros", children=[p[1]])
+        p[0] = Node("lista_parametros", valor=[p[1]])
 
 def p_parametro (p):
     '''parametro : tipo DOISPONTOS ID
 								 |  parametro ECOLCHE DCOLCHE
     '''
     if (p[2] == "DOISPONTOS"):
-        p[0] = Node("parametro", children=[p[1], p[3]])
+        p[0] = Node("parametro", children=[p[1]], valor=[p[3]])
     elif (p[2] == "ECOLCHE"):
         p[0] = Node("parametro", children=[p[1]])
 
@@ -110,9 +113,9 @@ def p_corpo (p):
 						 | vazio
     '''
     if (len(p) == 3):
-        p[0] = Node("corpo", children=[p[1], p[3]])
-    elif (len(p) >= 1):
-        p[0] = Node("corpo", children=[p[1]])
+        p[0] = Node("corpo", children=[p[1], p[2]])
+    elif (len(p) == 2):
+        p[0] = Node("corpo", valor=[p[1]])
 
 def p_acao (p):
     '''acao : expressao
@@ -124,7 +127,14 @@ def p_acao (p):
 						| RETORNA
 						| error
     '''
-    p[0] = Node("acao", children=[p[1]])
+    print("ACAo")
+    print(type(p[1]))
+    print(p[1])
+    if (type(p[1]) is str):
+        print("é string")
+        p[0] = Node("acao", valor=[p[1]])
+    else:
+        p[0] = Node("acao", children=[p[1]])
 
 def p_se (p):
     '''se : SE expressao ENTAO corpo FIM
@@ -263,13 +273,13 @@ def p_numero (p):
 							| NUM_FLUTUANTE
 							| NUM_CIENTIFICO
     '''
-    p[0] = Node("numero", children=[p[1]])
+    p[0] = Node("numero", valor=[p[1]])
 		#p[0] = Node(str(p[1]))
 
 def p_chamada_funcao (p):
     '''chamada_funcao : ID EPAREN lista_argumentos DPAREN
     '''
-    p[0] = Node("chamada_funcao", children=[p[1], p[3]])
+    p[0] = Node("chamada_funcao", children=[p[3]], valor=[p[1]])
 
 def p_lista_argumentos (p):
     '''lista_argumentos : lista_argumentos VIRGULA expressao
@@ -287,6 +297,7 @@ def p_erro(p):
 
 def p_vazio(p):
     'vazio :'
+    pass
     #p[0] = p[2]
 
 
