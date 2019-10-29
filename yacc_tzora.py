@@ -1,7 +1,4 @@
-# Yacc example
-"""
- ARRUMAR OPERAÇÕES DENTRO DOS IFS
-"""
+# Yacc
 import ply.yacc as yacc
 import sys
 from anytree import Node, RenderTree
@@ -16,7 +13,7 @@ def p_programa (p):
   '''programa : lista_declaracoes'''
   global count
   count += 1
-  print(count)
+  #print(count)
   p[0] = Node("programa", children=[p[1]])
   # Gera grafo
   DotExporter(p[0]).to_picture("grafo3.png")
@@ -47,6 +44,10 @@ def p_declaracao_variaveis (p):
     count += 1
     p[0] = Node("declaracao_variaveis/" + str(count), children=[p[1], p[3]])
 
+def p_declaracao_variaveis_error (p):
+    '''declaracao_variaveis : tipo DOISPONTOS error'''
+    print("Erro na declaração")
+
 def p_inicializacao_variaveis (p):
     'inicializacao_variaveis : atribuicao'
     global count
@@ -55,7 +56,7 @@ def p_inicializacao_variaveis (p):
     #p[0] = p[1]
 
 def p_lista_variaveis (p):
-    '''lista_variaveis : lista_variaveis "," var 
+    '''lista_variaveis : lista_variaveis VIRGULA var 
                        | var
     '''
     global count
@@ -72,9 +73,11 @@ def p_var (p):
     global count
     count += 1
     if (len(p) == 2):
-        p[0] = Node("var " + p[1] + "/" + str(count), valor=[p[1]])
+        noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+        p[0] = Node("var " + p[1] + "/" + str(count), children=[noValor])
     elif (len(p) == 3):
-        p[0] = Node("var/" + str(count), children=[p[2]], valor=[p[1]])
+        noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+        p[0] = Node("var/" + str(count), children=[noValor, p[2]])
 
 def p_indice (p):
     '''indice : indice ECOLCHE expressao DCOLCHE
@@ -86,6 +89,13 @@ def p_indice (p):
         p[0] = Node("indice/" + str(count), children=[p[1], p[3]])
     elif (len(p) == 4):
         p[0] = Node("indice/" + str(count), children=[p[2]])
+
+def p_indice_error (p):
+    '''indice : indice ECOLCHE error DCOLCHE
+              | ECOLCHE error DCOLCHE
+    '''
+    print("Falha de indice")
+    pass
 
 def p_tipo (p):
     '''tipo : INTEIRO
@@ -152,12 +162,11 @@ def p_corpo (p):
 def p_acao (p):
     '''acao : expressao
 						| declaracao_variaveis
-						| SE
-						| REPITA
-						| LEIA
-						| ESCREVA
-						| RETORNA
-						| error
+						| se
+						| repita
+						| leia
+						| escreva
+						| retorna
     '''
     global count
     count += 1
@@ -181,6 +190,12 @@ def p_se (p):
     elif (len(p) == 8):
         p[0] = Node("se/" + str(count), children=[p[2], p[4], p[6]])
 
+def p_se_error (p):
+    '''se : SE error ENTAO corpo FIM
+					| SE error ENTAO corpo SENAO corpo FIM
+    '''
+    print("Erro de expressão.")
+
 def p_repita (p):
     '''repita : REPITA corpo ATE expressao
     '''
@@ -203,8 +218,7 @@ def p_leia (p):
     p[0] = Node("leia/" + str(count), children=[p[3]])
 
 def p_escreva (p):
-    '''escreva : ESCREVA EPAREN expressao DPAREN
-    '''
+    'escreva : ESCREVA EPAREN expressao DPAREN'
     global count
     count += 1
     p[0] = Node("escreva/" + str(count), children=[p[3]])
@@ -289,30 +303,45 @@ def p_operador_relacional (p):
                             | MENORIGUAL
                             | MAIORIGUAL
     '''
-    p[0] = Node("operador_relacional " + p[1] + "/" + str(count), valor=[p[1]])
+    global count
+    count += 1
+    noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+    p[0] = Node("operador_relacional " + p[1] + "/" + str(count), children=[noValor])
 
 def p_operador_soma (p):
     '''operador_soma : ADICAO
 					 | SUBTRACAO
     '''
-    p[0] = Node("operador_soma", valor=[p[1]])
+    global count
+    count += 1
+    noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+    p[0] = Node("operador_soma/" + str(count), children=[noValor])
 
 def p_operador_logico (p):
     '''operador_logico : ELOGICO
                         | OULOGICO
     '''
-    p[0] = Node("operador_logico", valor=[p[1]])
+    global count
+    count += 1
+    noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+    p[0] = Node("operador_logico/" + str(count), children=[noValor])
 
 def p_operador_negacao (p):
     '''operador_negacao : NEGACAO
     '''
-    p[0] = Node("operador_negacao", valor=[p[1]])
+    global count
+    count += 1
+    noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+    p[0] = Node("operador_negacao/" + str(count), children=[noValor])
 
 def p_operador_multiplicacao (p):
     '''operador_multiplicacao : MULTIPLICACAO
               								| DIVISAO
     '''
-    p[0] = Node("operador_multiplicacao", valor=[p[1]])
+    global count
+    count += 1
+    noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+    p[0] = Node("operador_multiplicacao/" + str(count), children=[noValor])
 
 def p_fator (p):
     '''fator : EPAREN expressao DPAREN
@@ -333,7 +362,10 @@ def p_numero (p):
 							| NUM_FLUTUANTE
 							| NUM_CIENTIFICO
     '''
-    p[0] = Node("numero", valor=[p[1]])
+    global count
+    count += 1
+    noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+    p[0] = Node("numero "+p[1]+" /"+str(count), children=[noValor])
 		#p[0] = Node(str(p[1]))
 
 def p_chamada_funcao (p):
@@ -357,12 +389,19 @@ def p_lista_argumentos (p):
 
 # Error rule for syntax errors
 def p_error(p):
-    print("Syntax error in input!")
+    #print(p)
+    #print("Syntax error in input!")
+    if p:
+        print("Erro Sintatico: '%s' na linha '%d'" %(p.value, p.lineno-21))
+        parser.errok()
+    else:
+        print("Erro!")
 
 def p_vazio(p):
     '''vazio : '''
     #p[0] = Node("vazio")
     pass
+    p[0] = Node("vazio/" + str(count))
 
 
 
@@ -370,6 +409,7 @@ def p_vazio(p):
 arq = open(sys.argv[1], 'r', encoding="utf8")
 data = arq.read()
 
+arvore = Node("teste")
 
 # Build the parser
 parser = yacc.yacc()
@@ -382,6 +422,6 @@ data = arq.read()
 #    print("Erro na abertura do arquivo")
 
 result = parser.parse(data)
-print(result)
+#print(result)
 
 

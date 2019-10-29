@@ -1,6 +1,7 @@
-inteiro: m, n
+inteiro: m
+inteiro: n
 
-inteiro somaIntervaloNM (inteiro: m, n)
+inteiro somaIntervaloNM (inteiro: m, inteiro: n)
     inteiro: soma
     se m < n então
         soma := m
@@ -18,4 +19,5 @@ inteiro principal ()
     leia(m)
     leia(n)
     escreva(somaIntervaloNM(m, n))
+		retorna(0)
 fim
