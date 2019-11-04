@@ -11,12 +11,12 @@ count = 0
 
 def p_programa (p):
   '''programa : lista_declaracoes'''
-  global count
-  count += 1
-  #print(count)
+  global arvore
+
   p[0] = Node("programa", children=[p[1]])
-  # Gera grafo
-  DotExporter(p[0]).to_picture("grafo3.png")
+  arvore = p[0]
+  print(tabela)
+  
 
 def p_lista_declaracoes (p):
     '''lista_declaracoes : lista_declaracoes declaracao
@@ -43,6 +43,8 @@ def p_declaracao_variaveis (p):
     global count
     count += 1
     p[0] = Node("declaracao_variaveis/" + str(count), children=[p[1], p[3]])
+    new_line = ["VARIAVEL", p[3].children[len(p[3].children)-1].children[0].valor[0], p[1].valor[0], "", "", "", "", p.lineno(2), p.lexpos(2)]
+    tabela.append(new_line)
 
 def p_declaracao_variaveis_error (p):
     '''declaracao_variaveis : tipo DOISPONTOS error'''
@@ -113,8 +115,12 @@ def p_declaracao_funcao (p):
     count += 1
     if (len(p) == 3):
         p[0] = Node("declaracao_funcao/" + str(count), children=[p[1], p[2]])
+        new_line = ["FUNCAO", p[2].valor[0], p[1].valor[0], "", "", "", "", p.lineno(2), p.lexpos(2)]
+        tabela.append(new_line)
     elif (len(p) == 2):
         p[0] = Node("declaracao_funcao/" + str(count), children=[p[1]])
+        new_line = ["FUNCAO", p[1].valor[0], "void", "", "", "", "", p.lineno(1), p.lexpos(1)]
+        tabela.append(new_line)
 
 def p_cabecalho (p):
     '''cabecalho : ID EPAREN lista_parametros DPAREN corpo FIM
@@ -134,6 +140,8 @@ def p_lista_parametros (p):
     #print(len(p))
     if (len(p) == 4):
         p[0] = Node("lista_parametros/" + str(count), children=[p[1]], valor=[p[3]])
+PEGAR PAI FUNCAO        new_line = ["PARAMETRO", p[1].valor[0], "void", "", "", "", "", p.lineno(1), p.lexpos(1)]
+        tabela.append(new_line)
     elif (len(p) == 2):
         p[0] = Node("lista_parametros/" + str(count), valor=[p[1]])
 
@@ -209,6 +217,8 @@ def p_atribuicao (p):
     global count
     count += 1
     p[0] = Node("atribuicao/" + str(count), children=[p[1], p[3]])
+    new_line = ["ATRIBUICAO", p[1].children[0].valor[0], "", "", "", "", "", p.lineno(2), p.lexpos(2)]
+    tabela.append(new_line)
 
 def p_leia (p):
     '''leia : LEIA EPAREN var DPAREN
@@ -409,7 +419,8 @@ def p_vazio(p):
 arq = open(sys.argv[1], 'r', encoding="utf8")
 data = arq.read()
 
-arvore = Node("teste")
+arvore = Node("inicial")
+tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "lin", "col"]]
 
 # Build the parser
 parser = yacc.yacc()
@@ -421,7 +432,10 @@ data = arq.read()
 #except EOFError:
 #    print("Erro na abertura do arquivo")
 
-result = parser.parse(data)
+result = parser.parse(data, tracking=True)
 #print(result)
+
+# Gera grafo
+#DotExporter(p[0]).to_picture("grafo.png")
 
 
