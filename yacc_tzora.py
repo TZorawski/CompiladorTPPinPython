@@ -15,8 +15,6 @@ def p_programa (p):
 
   p[0] = Node("programa", children=[p[1]])
   arvore = p[0]
-  print(tabela)
-  
 
 def p_lista_declaracoes (p):
     '''lista_declaracoes : lista_declaracoes declaracao
@@ -113,13 +111,45 @@ def p_declaracao_funcao (p):
     '''
     global count
     count += 1
+
+    #encontra no inicial p/ parametros
+    if (len(p) == 3):
+        no_atual = p[2].children[0]
+    elif (len(p) == 2):
+        no_atual = p[1].children[0]
+    #parametros
+    parametros = [["tipo"], ["nome"]]
+    print("folhas")
+    print(p[2].children[0].leaves)
+    if (len(p[2].children[0].leaves)>0):
+        num_parametros = int(len(p[2].children[0].leaves)/2)
+    else:
+        num_parametros = 0
+    
+    for i in range(num_parametros):
+        if (i < (num_parametros-1)):
+            #tipo
+            parametros[0].append( no_atual.children[1].children[0].valor[0] )
+            #nome
+            parametros[1].append( no_atual.children[1].children[1].valor[0] )
+        else:
+            #tipo
+            parametros[0].append( no_atual.children[0].children[0].valor[0] )
+            #nome
+            parametros[1].append( no_atual.children[0].children[1].valor[0] )
+
+        #novo no
+        no_atual = no_atual.children[0]
+
     if (len(p) == 3):
         p[0] = Node("declaracao_funcao/" + str(count), children=[p[1], p[2]])
-        new_line = ["FUNCAO", p[2].valor[0], p[1].valor[0], "", "", "", "", p.lineno(2), p.lexpos(2)]
+
+        #guarda os parametros em 'escopo'
+        new_line = ["FUNCAO", p[2].children[0].valor[0], p[1].valor[0], "", "", parametros, "", p.lineno(2), p.lexpos(2)]
         tabela.append(new_line)
     elif (len(p) == 2):
         p[0] = Node("declaracao_funcao/" + str(count), children=[p[1]])
-        new_line = ["FUNCAO", p[1].valor[0], "void", "", "", "", "", p.lineno(1), p.lexpos(1)]
+        new_line = ["FUNCAO", p[2].children[0].valor[0], "void", "", "", "variaveis", "", p.lineno(1), p.lexpos(1)]
         tabela.append(new_line)
 
 def p_cabecalho (p):
@@ -127,7 +157,8 @@ def p_cabecalho (p):
     '''
     global count
     count += 1
-    p[0] = Node("cabecalho/" + str(count), children=[p[3], p[5]], valor=[p[1]])
+    noValor = Node("nome " + p[1] + " /" + str(count), valor=[p[1]])
+    p[0] = Node("cabecalho/" + str(count), children=[noValor, p[3], p[5]])
 
 def p_lista_parametros (p):
     '''lista_parametros : lista_parametros VIRGULA parametro
@@ -136,14 +167,12 @@ def p_lista_parametros (p):
     '''
     global count
     count += 1
-    #print("Lista variaveis: ")
-    #print(len(p))
     if (len(p) == 4):
-        p[0] = Node("lista_parametros/" + str(count), children=[p[1]], valor=[p[3]])
-PEGAR PAI FUNCAO        new_line = ["PARAMETRO", p[1].valor[0], "void", "", "", "", "", p.lineno(1), p.lexpos(1)]
-        tabela.append(new_line)
+        p[0] = Node("lista_parametros/" + str(count), children=[p[1], p[3]])
     elif (len(p) == 2):
-        p[0] = Node("lista_parametros/" + str(count), valor=[p[1]])
+        p[0] = Node("lista_parametros/XXXXXXXX" + str(count), children=[p[1]])
+        #new_line = ["PARAMETRO", p[1].children[1].valor[0], p[1].children[0].valor[0], "", "", "funcao", "", p.lineno(1), p.lexpos(1)]
+        #tabela.append(new_line)
 
 def p_parametro (p):
     '''parametro : tipo DOISPONTOS ID
@@ -151,9 +180,10 @@ def p_parametro (p):
     '''
     global count
     count += 1
-    if (p[2] == "DOISPONTOS"):
-        p[0] = Node("parametro/" + str(count), children=[p[1]], valor=[p[3]])
-    elif (p[2] == "ECOLCHE"):
+    if (p[2] == ":"):
+        noValor = Node(p[3]+"/"+str(count), valor=[p[3]])
+        p[0] = Node("parametro/" + str(count), children=[p[1], noValor])
+    elif (p[2] == "["):
         p[0] = Node("parametro/" + str(count), children=[p[1]])
 
 def p_corpo (p):
@@ -217,8 +247,8 @@ def p_atribuicao (p):
     global count
     count += 1
     p[0] = Node("atribuicao/" + str(count), children=[p[1], p[3]])
-    new_line = ["ATRIBUICAO", p[1].children[0].valor[0], "", "", "", "", "", p.lineno(2), p.lexpos(2)]
-    tabela.append(new_line)
+    #new_line = ["ATRIBUICAO", p[1].children[0].valor[0], "", "", "", "", "", p.lineno(2), p.lexpos(2)]
+    #tabela.append(new_line)
 
 def p_leia (p):
     '''leia : LEIA EPAREN var DPAREN
@@ -436,6 +466,6 @@ result = parser.parse(data, tracking=True)
 #print(result)
 
 # Gera grafo
-#DotExporter(p[0]).to_picture("grafo.png")
+DotExporter(arvore).to_picture("grafo.png")
 
 

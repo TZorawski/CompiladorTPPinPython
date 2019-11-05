@@ -1,10 +1,9 @@
-inteiro somaIntervaloNM (inteiro: m, inteiro: n)
+inteiro somaIntervaloNM (inteiro: m, inteiro: n, inteiro: x)
     inteiro: soma
-    some := n + m
+    soma := n + m
     retorna(soma)
 fim
 
-inteiro principal ()
-    escreva(somaIntervaloNM(1, 2))
-		retorna(0)
+inteiro principal (inteiro: d)
+		somaIntervaloNM (1,2,3)
 fim
