@@ -5,5 +5,9 @@ inteiro somaIntervaloNM (inteiro: m, inteiro: n, inteiro: x)
 fim
 
 inteiro principal (inteiro: d)
-		somaIntervaloNM (1,2,3)
+		inteiro: a, b, c
+		a := 1
+		b := 2
+		c := 3
+		somaIntervaloNM (a,32,c)
 fim

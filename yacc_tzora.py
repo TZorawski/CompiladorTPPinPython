@@ -114,20 +114,20 @@ def p_declaracao_funcao (p):
 
     #encontra no inicial p/ parametros
     if (len(p) == 3):
-        no_atual = p[2].children[0]
+        no_atual = p[2].children[1]
     elif (len(p) == 2):
-        no_atual = p[1].children[0]
+        no_atual = p[1].children[1]
+
     #parametros
     parametros = [["tipo"], ["nome"]]
-    print("folhas")
-    print(p[2].children[0].leaves)
-    if (len(p[2].children[0].leaves)>0):
-        num_parametros = int(len(p[2].children[0].leaves)/2)
+    if (len(no_atual.leaves)>0):
+        num_parametros = int(len(no_atual.leaves)/2)
     else:
         num_parametros = 0
-    
+    print(num_parametros)
+    #acessa os tipos e nomes das variaveis
     for i in range(num_parametros):
-        if (i < (num_parametros-1)):
+        if (i < (num_parametros-1)):#se eh o ultimo parametro
             #tipo
             parametros[0].append( no_atual.children[1].children[0].valor[0] )
             #nome
@@ -146,10 +146,12 @@ def p_declaracao_funcao (p):
 
         #guarda os parametros em 'escopo'
         new_line = ["FUNCAO", p[2].children[0].valor[0], p[1].valor[0], "", "", parametros, "", p.lineno(2), p.lexpos(2)]
+        print(new_line)
         tabela.append(new_line)
     elif (len(p) == 2):
         p[0] = Node("declaracao_funcao/" + str(count), children=[p[1]])
-        new_line = ["FUNCAO", p[2].children[0].valor[0], "void", "", "", "variaveis", "", p.lineno(1), p.lexpos(1)]
+        new_line = ["FUNCAO", p[2].children[0].valor[0], "void", "", "", parametros, "", p.lineno(1), p.lexpos(1)]
+        print(new_line)
         tabela.append(new_line)
 
 def p_cabecalho (p):
@@ -414,6 +416,16 @@ def p_chamada_funcao (p):
     global count
     count += 1
     p[0] = Node("chamada_funcao/" + str(count), children=[p[3]], valor=[p[1]])
+
+    #argumentos
+    argumentos = [["tipo"], ["nome"]]
+    
+    for i in p[3].leaves:
+        argumentos[0].append( "" )
+        argumentos[1].append( i.valor[0] )
+
+    new_line = ["CHAMADA", p[1], "", "", "", argumentos, "", p.lineno(2), p.lexpos(2)]
+    tabela.append(new_line)
 
 def p_lista_argumentos (p):
     '''lista_argumentos : lista_argumentos VIRGULA expressao
