@@ -26,6 +26,9 @@ def p_lista_declaracoes (p):
         p[0] = Node("lista_declaracoes/" + str(count), children=[p[1]])
     elif (len(p) == 3):
         p[0] = Node("lista_declaracoes/" + str(count), children=[p[1], p[2]])
+    #elimina variaveis globais do vetor de variaveis
+    global variaveis
+    variaveis = []
 
 def p_declaracao (p):
     '''declaracao : declaracao_variaveis
@@ -41,8 +44,16 @@ def p_declaracao_variaveis (p):
     global count
     count += 1
     p[0] = Node("declaracao_variaveis/" + str(count), children=[p[1], p[3]])
-    new_line = ["VARIAVEL", p[3].children[len(p[3].children)-1].children[0].valor[0], p[1].valor[0], "", "", "", "", p.lineno(2), p.lexpos(2)]
-    tabela.append(new_line)
+    no_atual = p[3]
+
+    #adiciona todas as variáveis da lista de variaveis na tabela
+    var_a_percorrer = len(p[3].leaves)
+    while(var_a_percorrer != 0):
+        new_line = ["VARIAVEL", no_atual.children[len(no_atual.children)-1].children[0].valor[0], p[1].valor[0], "", "", "global", "", p.lineno(2), p.lexpos(2)]
+        tabela.append(new_line)
+        variaveis.append( len(tabela)-1 )
+        no_atual = no_atual.children[0]
+        var_a_percorrer -= 1
 
 def p_declaracao_variaveis_error (p):
     '''declaracao_variaveis : tipo DOISPONTOS error'''
@@ -124,7 +135,6 @@ def p_declaracao_funcao (p):
         num_parametros = int(len(no_atual.leaves)/2)
     else:
         num_parametros = 0
-    print(num_parametros)
     #acessa os tipos e nomes das variaveis
     for i in range(num_parametros):
         if (i < (num_parametros-1)):#se eh o ultimo parametro
@@ -146,12 +156,10 @@ def p_declaracao_funcao (p):
 
         #guarda os parametros em 'escopo'
         new_line = ["FUNCAO", p[2].children[0].valor[0], p[1].valor[0], "", "", parametros, "", p.lineno(2), p.lexpos(2)]
-        print(new_line)
         tabela.append(new_line)
     elif (len(p) == 2):
         p[0] = Node("declaracao_funcao/" + str(count), children=[p[1]])
         new_line = ["FUNCAO", p[2].children[0].valor[0], "void", "", "", parametros, "", p.lineno(1), p.lexpos(1)]
-        print(new_line)
         tabela.append(new_line)
 
 def p_cabecalho (p):
@@ -161,6 +169,13 @@ def p_cabecalho (p):
     count += 1
     noValor = Node("nome " + p[1] + " /" + str(count), valor=[p[1]])
     p[0] = Node("cabecalho/" + str(count), children=[noValor, p[3], p[5]])
+
+    #insere escopo vas variaveis do corpo
+    global variaveis
+    for i in variaveis:
+        tabela[i][5] = p[1]
+    #limpa lista de variaveis
+    variaveis = []
 
 def p_lista_parametros (p):
     '''lista_parametros : lista_parametros VIRGULA parametro
@@ -463,6 +478,7 @@ data = arq.read()
 
 arvore = Node("inicial")
 tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "lin", "col"]]
+variaveis = [] # Guarda índice das variáveis já declaradas na tabela para definição do escopo
 
 # Build the parser
 parser = yacc.yacc()
