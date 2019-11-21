@@ -3,6 +3,7 @@ from anytree.exporter import DotExporter
 
 from yacc_tzora import arvore, tabela
 
+
 # =========================
 # === Variáveis Globais ===
 # =========================
@@ -22,6 +23,17 @@ def estaContido(regra, pos, x, opcao=None):
 			elif (opcao != None and i[pos] == x and (i[5] == opcao or i[5] == "global")):
 				return True
 	return False
+
+# Retorna a linha de x
+def getLinha(regra, pos, x, opcao=None):
+	for i in range (len(tabela)):
+		if (tabela[i][0] == regra):
+			if (opcao == None and tabela[i][pos] == x):
+				return i
+			# Devolve posição de x em um escopo específico
+			elif (opcao != None and tabela[i][pos] == x and (tabela[i][5] == opcao or tabela[i][5] == "global")):
+				return i
+	return -1
 
 
 
@@ -49,14 +61,21 @@ def percorreArvore(no_atual):
 
 	# Trata atribuições
 	if ("atribuicao/" in no_atual.name):
-		#global escopo
 		var = no_atual.children[0].children[0].valor[0]
-		print("escopo " + escopo)
 		if (not estaContido("VARIAVEL", 1, var, escopo)):
 			global lista_mensagens
 			mensagem = "ERRO: variável " + var + " está sendo usada, mas não foi declarada."
 			lista_mensagens.append(mensagem)
 			print(mensagem)
+		else: # Registra que a variável foi inicializada
+			pos = getLinha("VARIAVEL", 1, var, escopo)
+			tabela[pos][6] = 1
+
+		folhas = no_atual.children[1].leaves
+		for j in folhas:
+			pos = getLinha("VARIAVEL", 1, j.valor[0], escopo)
+			if ( pos != -1):
+				tabela[pos][9] = 1
 
 	# Percorre filhos
 	for i in no_atual.children:
@@ -72,6 +91,7 @@ def percorreArvore(no_atual):
 # Faz varredura semântica
 def varre_semantica():
 	global lista_mensagens
+	declaradas = []
 	#print(tabela)
 
 	# === Tem função principal ===
@@ -81,9 +101,10 @@ def varre_semantica():
 		print(mensagem)
 		return -1
 
-	# === Olha quantidades de parâmetros ===
-	# Encontra as funções
+	# Percorre tabela de símbolos
 	for i in range (len(tabela)):
+		# === Olha quantidades de parâmetros ===
+		# Encontra as funções
 		if (tabela[i][0] == "FUNCAO"):
 
 			# Encontra as chamadas funções
@@ -95,12 +116,30 @@ def varre_semantica():
 								lista_mensagens.append(mensagem)
 								print(mensagem)
 								return -1
-	CONTAR QUANTAS VEZES UMA VARIÁVEL É USADA
-	DAR WARNING QUANDO UMA VARIÁVEL FOR DECLARADA MAIS DE UMA VEZ
+
+		# === Verifica se uma variável foi declarada mais de uma vez ===
+		if (tabela[i][0] == "VARIAVEL"):
+			if (((tabela[i][1]+tabela[i][5]) in declaradas) or ((tabela[i][1]+"global") in declaradas)):
+				mensagem = "WARNING: Variável " + tabela[i][1] + " na linha " + str(tabela[i][7]) + " já foi declarada."
+				lista_mensagens.append(mensagem)
+				print(mensagem)
+				#return -1
+			declaradas.append(tabela[i][1]+tabela[i][5])
 
 	# === Percorre Árvore ===
 	percorreArvore(arvore)
 
+	# === Verifica se as variáveis foram inicializadas ===
+	for i in range (len(tabela)):
+		if (tabela[i][0] == "VARIAVEL" and tabela[i][6] == 0):
+			mensagem = "WARNING: Variável " + tabela[i][1] + " na linha " + str(tabela[i][7]) + " foi declarada mas não inicializada."
+			lista_mensagens.append(mensagem)
+			print(mensagem)
+			return -1
+
+	print(tabela)
+MOSTRAR SE A VARIÁVEL NÃO FOI UTILIZADA
+IGUAL A LINHA DE CIMA
 
 
 varre_semantica()

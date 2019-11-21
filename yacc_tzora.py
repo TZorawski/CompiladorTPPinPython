@@ -49,7 +49,7 @@ def p_declaracao_variaveis (p):
     #adiciona todas as variáveis da lista de variaveis na tabela
     var_a_percorrer = len(p[3].leaves)
     while(var_a_percorrer != 0):
-        new_line = ["VARIAVEL", no_atual.children[len(no_atual.children)-1].children[0].valor[0], p[1].valor[0], "", "", "global", "", p.lineno(2), p.lexpos(2)]
+        new_line = ["VARIAVEL", no_atual.children[len(no_atual.children)-1].children[0].valor[0], p[1].valor[0], "", "", "global", "", p.lineno(2), p.lexpos(2), "0"]
         tabela.append(new_line)
         variaveis.append( len(tabela)-1 )
         no_atual = no_atual.children[0]
@@ -477,6 +477,9 @@ arq = open(sys.argv[1], 'r', encoding="utf8")
 data = arq.read()
 
 arvore = Node("inicial")
+# Se o token for FUNCAO, escopo guarda o nome das variáveis e seus tipos
+# Se o token for VARIAVEL, terá um campo a mais para guardar se ela foi lida (1) ou não (0)
+# Posição 6 recebe 1 se a variável foi inicializada e 0 caso contrário
 tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "lin", "col"]]
 variaveis = [] # Guarda índice das variáveis já declaradas na tabela para definição do escopo
 
