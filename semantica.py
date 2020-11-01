@@ -2,6 +2,14 @@ from anytree import Node, RenderTree
 from anytree.exporter import DotExporter
 
 from yacc_tzora import arvore, tabela
+"""
+tratar tipo indice vetor e inervalo
+tratar tipo retorno
+tratar tipo coersao atribuição
+tratar função não declarada
+tratar função duplicada
+tratar tipos de parametros
+"""
 
 
 # =========================
@@ -64,22 +72,31 @@ def percorreArvore(no_atual):
 		var = no_atual.children[0].children[0].valor[0]
 		if (not estaContido("VARIAVEL", 1, var, escopo)):
 			global lista_mensagens
-			mensagem = "ERRO: variável " + var + " está sendo usada, mas não foi declarada."
+			mensagem = "ERROR: variável " + var + " está sendo usada, mas não foi declarada."
 			lista_mensagens.append(mensagem)
 			print(mensagem)
+			return -1
 		else: # Registra que a variável foi inicializada
 			pos = getLinha("VARIAVEL", 1, var, escopo)
 			tabela[pos][6] = 1
 
+		# Percorre fatores da atribuição
 		folhas = no_atual.children[1].leaves
 		for j in folhas:
 			pos = getLinha("VARIAVEL", 1, j.valor[0], escopo)
 			if ( pos != -1):
-				tabela[pos][9] = 1
+				tabela[pos][7] = 1 # Registra que a variável foi utilizada
+				if (tabela[pos][6] == 0):
+					mensagem = "ERROR: variável " + j.valor[0] + " está sendo usada, mas não foi inicializada."
+					lista_mensagens.append(mensagem)
+					print(mensagem)
+					return -1
 
 	# Percorre filhos
 	for i in no_atual.children:
-		percorreArvore(i)
+		hasError = percorreArvore(i)
+		if (hasError == -1):
+			return -1
 
 	# Defina escopo (ao sair da função)
 	if ("declaracao_funcao/" in no_atual.name):
@@ -91,12 +108,13 @@ def percorreArvore(no_atual):
 # Faz varredura semântica
 def varre_semantica():
 	global lista_mensagens
-	declaradas = []
+	declaradas = [] # Armazena nome das variaveis declaradas
+	repeticoes = [] # Armazena elementos repetidos, para a exclusão
 	#print(tabela)
 
 	# === Tem função principal ===
 	if (not hasPrincipal()):
-		mensagem = "ERRO: Programa não tem função principal."
+		mensagem = "ERROR: Programa não tem função principal."
 		lista_mensagens.append(mensagem)
 		print(mensagem)
 		return -1
@@ -112,35 +130,56 @@ def varre_semantica():
 				if (tabela[j][0] == "CHAMADA" and tabela[j][1] == tabela[i][1]):
 					# Compara se o num de parametros é o mesmo
 					if (len(tabela[i][5][1]) != len(tabela[j][5][1])):
-								mensagem = "ERRO: A função " + tabela[i][1] + " deve ter " + str(len(tabela[i][5][1]) - 1) + " parâmetros e ela foi chamada com " + str(len(tabela[j][5][1]) - 1) + " parâmetros."
+								mensagem = "ERROR: A função " + tabela[i][1] + " deve ter " + str(len(tabela[i][5][1]) - 1) + " parâmetros e ela foi chamada com " + str(len(tabela[j][5][1]) - 1) + " parâmetros."
 								lista_mensagens.append(mensagem)
 								print(mensagem)
 								return -1
+					else:
+								print(tabela[i][5][1])
 
 		# === Verifica se uma variável foi declarada mais de uma vez ===
 		if (tabela[i][0] == "VARIAVEL"):
 			if (((tabela[i][1]+tabela[i][5]) in declaradas) or ((tabela[i][1]+"global") in declaradas)):
-				mensagem = "WARNING: Variável " + tabela[i][1] + " na linha " + str(tabela[i][7]) + " já foi declarada."
+				mensagem = "ERROR: Variável " + tabela[i][1] + " na linha " + str(tabela[i][7]) + " já foi declarada."
 				lista_mensagens.append(mensagem)
 				print(mensagem)
-				#return -1
-			declaradas.append(tabela[i][1]+tabela[i][5])
+				return -1
+				repeticoes.append(i)
+			else:
+				declaradas.append(tabela[i][1]+tabela[i][5])
+
+	# === Remove repeticoes ===
+	for i in repeticoes:
+		tabela.pop(i)
 
 	# === Percorre Árvore ===
-	percorreArvore(arvore)
+	hasError = percorreArvore(arvore)
+	if (hasError == -1):
+		return -1
 
-	# === Verifica se as variáveis foram inicializadas ===
+	# === Verifica a inicialização e utilização das variáveis ===
 	for i in range (len(tabela)):
+		# === Verifica se as variáveis foram inicializadas ===
 		if (tabela[i][0] == "VARIAVEL" and tabela[i][6] == 0):
 			mensagem = "WARNING: Variável " + tabela[i][1] + " na linha " + str(tabela[i][7]) + " foi declarada mas não inicializada."
 			lista_mensagens.append(mensagem)
 			print(mensagem)
-			return -1
 
-	print(tabela)
-MOSTRAR SE A VARIÁVEL NÃO FOI UTILIZADA
-IGUAL A LINHA DE CIMA
+		# === Verifica se as variáveis foram utilizadas ===
+		if (tabela[i][0] == "VARIAVEL" and tabela[i][7] == 0):
+			mensagem = "WARNING: Variável " + tabela[i][1] + " na linha " + str(tabela[i][7]) + " foi declarada mas nunca utilizada."
+			lista_mensagens.append(mensagem)
+			print(mensagem)
+
+	#print(tabela)
 
 
-varre_semantica()
+# Chama varedura
+has_erros = varre_semantica()
+#print(tabela)
+
+#if (has_erros != -1):
+#	for i in lista_mensagens:
+#		print(i)
+
 

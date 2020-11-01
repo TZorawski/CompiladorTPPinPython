@@ -1,9 +1,8 @@
 inteiro: teste
 
 inteiro principal ()
-		inteiro: a, b
-		teste := 10
+		inteiro: a, b, c, d
 		a := 1
-		soma := a + teste
-		somaIntervaloNM (a,32,teste)
+		b := a + 6
+		somaIntervaloNM (a,32,9)
 fim

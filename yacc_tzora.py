@@ -49,7 +49,7 @@ def p_declaracao_variaveis (p):
     #adiciona todas as variáveis da lista de variaveis na tabela
     var_a_percorrer = len(p[3].leaves)
     while(var_a_percorrer != 0):
-        new_line = ["VARIAVEL", no_atual.children[len(no_atual.children)-1].children[0].valor[0], p[1].valor[0], "", "", "global", "", p.lineno(2), p.lexpos(2), "0"]
+        new_line = ["VARIAVEL", no_atual.children[len(no_atual.children)-1].children[0].valor[0], p[1].valor[0], "", "", "global", 0, 0, "", p.lineno(2), p.lexpos(2)]
         tabela.append(new_line)
         variaveis.append( len(tabela)-1 )
         no_atual = no_atual.children[0]
@@ -102,7 +102,11 @@ def p_indice (p):
         p[0] = Node("indice/" + str(count), children=[p[2]])
 
 def p_indice_error (p):
-    '''indice : indice ECOLCHE error DCOLCHE
+    '''indice : ECOLCHE error
+              | error DCOLCHE
+              | indice ECOLCHE error DCOLCHE
+              | indice ECOLCHE error
+              | indice error DCOLCHE
               | ECOLCHE error DCOLCHE
     '''
     print("Falha de indice")
@@ -155,11 +159,11 @@ def p_declaracao_funcao (p):
         p[0] = Node("declaracao_funcao/" + str(count), children=[p[1], p[2]])
 
         #guarda os parametros em 'escopo'
-        new_line = ["FUNCAO", p[2].children[0].valor[0], p[1].valor[0], "", "", parametros, "", p.lineno(2), p.lexpos(2)]
+        new_line = ["FUNCAO", p[2].children[0].valor[0], p[1].valor[0], "", "", "", 1, 0, parametros, p.lineno(2), p.lexpos(2)]
         tabela.append(new_line)
     elif (len(p) == 2):
         p[0] = Node("declaracao_funcao/" + str(count), children=[p[1]])
-        new_line = ["FUNCAO", p[2].children[0].valor[0], "void", "", "", parametros, "", p.lineno(1), p.lexpos(1)]
+        new_line = ["FUNCAO", p[2].children[0].valor[0], "void", "", "", "", 1, 0, parametros, p.lineno(1), p.lexpos(1)]
         tabela.append(new_line)
 
 def p_cabecalho (p):
@@ -202,6 +206,13 @@ def p_parametro (p):
         p[0] = Node("parametro/" + str(count), children=[p[1], noValor])
     elif (p[2] == "["):
         p[0] = Node("parametro/" + str(count), children=[p[1]])
+
+def p_parametro_error (p):
+    '''parametro : tipo error ID
+								 |  error ID
+								 |  parametro error DCOLCHE
+								 |  parametro ECOLCHE error
+    '''
 
 def p_corpo (p):
     '''corpo : corpo acao 
@@ -246,10 +257,14 @@ def p_se (p):
         p[0] = Node("se/" + str(count), children=[p[2], p[4], p[6]])
 
 def p_se_error (p):
-    '''se : SE error ENTAO corpo FIM
-					| SE error ENTAO corpo SENAO corpo FIM
+    '''se : error expressao ENTAO corpo FIM
+					| SE expressao error corpo FIM
+					| error expressao ENTAO corpo SENAO corpo FIM
+					| SE expressao error corpo SENAO corpo FIM
+					| SE expressao ENTAO corpo error corpo FIM
+					| SE expressao ENTAO corpo SENAO corpo
     '''
-    print("Erro de expressão.")
+    print("Erro no bloco se.")
 
 def p_repita (p):
     '''repita : REPITA corpo ATE expressao
@@ -257,6 +272,11 @@ def p_repita (p):
     global count
     count += 1
     p[0] = Node("repita/" + str(count), children=[p[2], p[4]])
+
+def p_repita_error (p):
+    '''repita : error corpo ATE expressao
+							| REPITA corpo error expressao
+    '''
 
 def p_atribuicao (p):
     '''atribuicao : var ATRIBUICAO expressao
@@ -273,6 +293,10 @@ def p_leia (p):
     global count
     count += 1
     p[0] = Node("leia/" + str(count), children=[p[3]])
+
+def p_leia_error (p):
+    '''leia : LEIA EPAREN error DPAREN
+    '''
 
 def p_escreva (p):
     'escreva : ESCREVA EPAREN expressao DPAREN'
@@ -434,7 +458,8 @@ def p_chamada_funcao (p):
 
     #argumentos
     argumentos = [["tipo"], ["nome"]]
-    
+    print(p[3].leaves)
+		
     for i in p[3].leaves:
         argumentos[0].append( "" )
         argumentos[1].append( i.valor[0] )
@@ -459,7 +484,7 @@ def p_error(p):
     #print(p)
     #print("Syntax error in input!")
     if p:
-        print("Erro Sintatico: '%s' na linha '%d'" %(p.value, p.lineno-21))
+        print("Erro Sintatico: '%s' na linha '%d'" %(p.value, p.lineno))
         parser.errok()
     else:
         print("Erro!")
@@ -468,7 +493,7 @@ def p_vazio(p):
     '''vazio : '''
     #p[0] = Node("vazio")
     pass
-    p[0] = Node("vazio/" + str(count))
+    p[0] = Node("vazio/" + str(count), valor=["vazio"])
 
 
 
@@ -477,10 +502,11 @@ arq = open(sys.argv[1], 'r', encoding="utf8")
 data = arq.read()
 
 arvore = Node("inicial")
-# Se o token for FUNCAO, escopo guarda o nome das variáveis e seus tipos
-# Se o token for VARIAVEL, terá um campo a mais para guardar se ela foi lida (1) ou não (0)
-# Posição 6 recebe 1 se a variável foi inicializada e 0 caso contrário
-tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "lin", "col"]]
+# Se o token for FUNCAO, posição 8 guarda o nome das variáveis e seus tipos
+# Se o token for VARIAVEL ou FUNCAO, posição 6 guarda se ela foi lida/utilizada (1) ou não (0)
+# Se o token for VARIAVEL, posição 6 recebe 1 se a variável foi inicializada e 0 caso contrário
+# tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "lin", "col"]]
+tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "utilizado", "variaveis", "lin", "col"]]
 variaveis = [] # Guarda índice das variáveis já declaradas na tabela para definição do escopo
 
 # Build the parser
