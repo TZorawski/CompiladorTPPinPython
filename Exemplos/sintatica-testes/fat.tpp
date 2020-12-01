@@ -1,7 +1,8 @@
-inteiro: n
+
 
 inteiro fatorial(inteiro: n)
     inteiro: fat
+		n:= 6
     se n > 0 então {não calcula se n > 0}
         fat := 1
         repita
@@ -10,30 +11,13 @@ inteiro fatorial(inteiro: n)
         até n = 0
         retorna(fat) {retorna o valor do fatorial de n}
     senão
-        retorna(0)
+        retorna(1)
     fim
 fim
 
 inteiro principal()
-    leia(n)
+    inteiro: n
+    n:= 6
     escreva(fatorial(n))
     retorna(0)
 fim
-
-1.32e110
-
-1.32E-110
-
--1.32e110
-
-+1.32e110
-
-(1++2)
-+2
-
--3
-{}
-
-{
-    saf
-}

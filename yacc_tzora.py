@@ -8,6 +8,7 @@ from anytree.exporter import DotExporter
 from lex_tzora import tokens
 
 count = 0
+tem_erro_yacc = False
 
 def p_programa (p):
   '''programa : lista_declaracoes'''
@@ -48,16 +49,28 @@ def p_declaracao_variaveis (p):
 
     #adiciona todas as variáveis da lista de variaveis na tabela
     var_a_percorrer = len(p[3].leaves)
-    while(var_a_percorrer != 0):
+    global tem_erro_yacc
+    while(var_a_percorrer != 0 and (not tem_erro_yacc)):
         new_line = ["VARIAVEL", no_atual.children[len(no_atual.children)-1].children[0].valor[0], p[1].valor[0], "", "", "global", 0, 0, "", p.lineno(2), p.lexpos(2)]
         tabela.append(new_line)
         variaveis.append( len(tabela)-1 )
-        no_atual = no_atual.children[0]
+        # --- guarda no atributo "tipo" do nó de valor do nó "var" o tipo da variável, para facilitar futuras computações ---
+        no_atual.children[len(no_atual.children)-1].children[0].tipo = p[1].valor #                                         \
+        # -------------------------------------------------------------------------------------------------------------------
+        no_atual = no_atual.children[0] # avança para próximo nó
         var_a_percorrer -= 1
 
 def p_declaracao_variaveis_error (p):
-    '''declaracao_variaveis : tipo DOISPONTOS error'''
-    print("Erro na declaração")
+    '''declaracao_variaveis : tipo DOISPONTOS error
+                            | tipo DOISPONTOS'''
+    print("Erro Sintático: erro na declaração de variáveis.")
+    global tem_erro_yacc
+    tem_erro_yacc = True
+    global count
+    count += 1
+    no_erro = Node("erro/" + str(count))
+    p[0] = Node("declaracao_variaveis/" + str(count), children=[p[1], no_erro])
+    parser.errok()
 
 def p_inicializacao_variaveis (p):
     'inicializacao_variaveis : atribuicao'
@@ -84,10 +97,11 @@ def p_var (p):
     global count
     count += 1
     if (len(p) == 2):
-        noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+        # --- cria o atributo "tipo" no nó de valor de "var", o qual será utilizado para guardar o tipo da variável
+        noValor = Node(p[1]+"/"+str(count), valor=[p[1]], tipo=[""])
         p[0] = Node("var " + p[1] + "/" + str(count), children=[noValor])
     elif (len(p) == 3):
-        noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+        noValor = Node(p[1]+"/"+str(count), valor=[p[1]], tipo=[""])
         p[0] = Node("var/" + str(count), children=[noValor, p[2]])
 
 def p_indice (p):
@@ -108,9 +122,16 @@ def p_indice_error (p):
               | indice ECOLCHE error
               | indice error DCOLCHE
               | ECOLCHE error DCOLCHE
+              | indice ECOLCHE DCOLCHE
     '''
-    print("Falha de indice")
-    pass
+    print("Erro Sintático: erro na indexação.")
+    global tem_erro_yacc
+    tem_erro_yacc = True
+    global count
+    count += 1
+    no_erro = Node("erro/" + str(count))
+    p[0] = Node("indice/" + str(count), children=[no_erro])
+    parser.errok()
 
 def p_tipo (p):
     '''tipo : INTEIRO
@@ -126,32 +147,38 @@ def p_declaracao_funcao (p):
     '''
     global count
     count += 1
+    nome_funcao = "" # Para preencher o escopo dos parâmetros
 
     #encontra no inicial p/ parametros
     if (len(p) == 3):
         no_atual = p[2].children[1]
+        nome_funcao = p[2].children[0].valor[0]
     elif (len(p) == 2):
         no_atual = p[1].children[1]
+        nome_funcao = p[1].children[0].valor[0]
 
     #parametros
     parametros = [["tipo"], ["nome"]]
-    if (len(no_atual.leaves)>0):
+    global tem_erro_yacc
+    if (len(no_atual.leaves)>0 and (not tem_erro_yacc)):
         num_parametros = int(len(no_atual.leaves)/2)
     else:
         num_parametros = 0
     #acessa os tipos e nomes das variaveis
     for i in range(num_parametros):
-        if (i < (num_parametros-1)):#se eh o ultimo parametro
+        if (i < (num_parametros-1)):#se é o último parametro
             #tipo
             parametros[0].append( no_atual.children[1].children[0].valor[0] )
             #nome
             parametros[1].append( no_atual.children[1].children[1].valor[0] )
+            tabela[no_atual.children[1].children[1].pos_var[0]] = nome_funcao # Preenche o escopo no parâmetro
         else:
             #tipo
             parametros[0].append( no_atual.children[0].children[0].valor[0] )
             #nome
             parametros[1].append( no_atual.children[0].children[1].valor[0] )
-
+            tabela[no_atual.children[0].children[1].pos_var[0]] = nome_funcao # Preenche o escopo no parâmetro
+        #tabela[no_atual.children[1].children[1].pos_var[0]] = nome_funcao
         #novo no
         no_atual = no_atual.children[0]
 
@@ -191,7 +218,7 @@ def p_lista_parametros (p):
     if (len(p) == 4):
         p[0] = Node("lista_parametros/" + str(count), children=[p[1], p[3]])
     elif (len(p) == 2):
-        p[0] = Node("lista_parametros/XXXXXXXX" + str(count), children=[p[1]])
+        p[0] = Node("lista_parametros/" + str(count), children=[p[1]])
         #new_line = ["PARAMETRO", p[1].children[1].valor[0], p[1].children[0].valor[0], "", "", "funcao", "", p.lineno(1), p.lexpos(1)]
         #tabela.append(new_line)
 
@@ -202,8 +229,12 @@ def p_parametro (p):
     global count
     count += 1
     if (p[2] == ":"):
-        noValor = Node(p[3]+"/"+str(count), valor=[p[3]])
+        noValor = Node(p[3]+"/"+str(count), valor=[p[3]], pos_var=[len(tabela)]) # pos_var guarda a posição da variável-parâmetro na tabela para finalizar o seu preenchimento no cabeçalho da função
         p[0] = Node("parametro/" + str(count), children=[p[1], noValor])
+
+        new_line = ["VARIAVEL", p[3], p[1].valor[0], "", "", "", 0, 0, "", p.lineno(2), p.lexpos(2)]
+        tabela.append(new_line)
+        variaveis.append( len(tabela)-1 )
     elif (p[2] == "["):
         p[0] = Node("parametro/" + str(count), children=[p[1]])
 
@@ -212,7 +243,19 @@ def p_parametro_error (p):
 								 |  error ID
 								 |  parametro error DCOLCHE
 								 |  parametro ECOLCHE error
+								 |  ID
+								 |  tipo DOISPONTOS
+								 |  tipo
+								 |  DOISPONTOS ID
     '''
+    print("Erro Sintático: erro na definição de parâmetros de função.")
+    global tem_erro_yacc
+    tem_erro_yacc = True
+    global count
+    count += 1
+    no_erro = Node("erro/" + str(count))
+    p[0] = Node("parametro/" + str(count), children=[no_erro])
+    parser.errok()
 
 def p_corpo (p):
     '''corpo : corpo acao 
@@ -445,7 +488,7 @@ def p_numero (p):
     '''
     global count
     count += 1
-    noValor = Node(p[1]+"/"+str(count), valor=[p[1]])
+    noValor = Node(p[1]+"/"+str(count), valor=[p[1]], tipo=["numero"])
     p[0] = Node("numero "+p[1]+" /"+str(count), children=[noValor])
 		#p[0] = Node(str(p[1]))
 
@@ -458,13 +501,25 @@ def p_chamada_funcao (p):
 
     #argumentos
     argumentos = [["tipo"], ["nome"]]
-    print(p[3].leaves)
-		
-    for i in p[3].leaves:
-        argumentos[0].append( "" )
-        argumentos[1].append( i.valor[0] )
+    #print(p[3].leaves)
+    #DotExporter(p[0]).to_picture("ap.png")
 
-    new_line = ["CHAMADA", p[1], "", "", "", argumentos, "", p.lineno(2), p.lexpos(2)]
+    if (len(p[3].leaves) == 1): # Trata o caso dos parâmetros serem 1, vazio ou muitos
+        if ("expressao" in p[3].children[0].name):
+            for i in p[3].leaves:
+                print(i.tipo)
+                argumentos[0].append( "" )
+                argumentos[1].append( i.valor[0] )
+        else:
+            #print(p[3].children[0].name)
+            pass
+    else:
+        for i in p[3].leaves:
+            print(i.tipo)
+            argumentos[0].append( "" )
+            argumentos[1].append( i.valor[0] )
+
+    new_line = ["CHAMADA", p[1], "", "", "", "", "", "", argumentos, p.lineno(2), p.lexpos(2)]
     tabela.append(new_line)
 
 def p_lista_argumentos (p):
@@ -484,6 +539,7 @@ def p_error(p):
     #print(p)
     #print("Syntax error in input!")
     if p:
+        #print("Erro Sintatico: '%s' na linha 4" %(p.value))
         print("Erro Sintatico: '%s' na linha '%d'" %(p.value, p.lineno))
         parser.errok()
     else:
@@ -506,6 +562,23 @@ arvore = Node("inicial")
 # Se o token for VARIAVEL ou FUNCAO, posição 6 guarda se ela foi lida/utilizada (1) ou não (0)
 # Se o token for VARIAVEL, posição 6 recebe 1 se a variável foi inicializada e 0 caso contrário
 # tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "lin", "col"]]
+"""
+---------------------------------------------------------------------------------------------------------------
+|                                                    TABELA                                                   |
+---------------------------------------------------------------------------------------------------------------
+|   0   |    1   |   2  |     3    |    4    |    5   |       6      |     7     |     8     |   9   |   10   |
+---------------------------------------------------------------------------------------------------------------
+| Token | Lexema | Tipo | Dimensão | Tamanho | Escopo | Inicializado | Utilizado | Variareis | Linha | Coluna |
+---------------------------------------------------------------------------------------------------------------
+==============
+Explicação de cada campo:
+- Token: guarda o valor do token que gerou a linha na tabela. Pode receber: VARIAVEL, FUNCAO, CHAMADA (para chamada de funções).
+- Lexema: guarda o nome do elemento que gerou a linha na tabela. Se o token for FUNCAO, lexema guardará o nome da função. Se o token for VARIAVEL, lexema guardará o nome da variável.
+- Tipo: se o token for FUNCAO, guarda o tipo do retorno da função. Se o token for VARIAVEL, guarda o tipo da variável.
+- Dimensão: guarda a dimensão das variáveis. Por exemplo, vetores tem dimensão 1, matrizes tem dimensão 2.
+- Tamanho: guarda o tamanho (quantidade de elementos) de cada dimensão da variável. Caso a variável tenha dimensão 0, o tamanho também será 0.
+- Escopo: guarda o escopo de cada variável. Esse campo pode assumir o valor "global" ou, se a variável for local, assumirá o nome da função em que a variável foi declarada.
+"""
 tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "utilizado", "variaveis", "lin", "col"]]
 variaveis = [] # Guarda índice das variáveis já declaradas na tabela para definição do escopo
 
@@ -523,6 +596,7 @@ result = parser.parse(data, tracking=True)
 #print(result)
 
 # Gera grafo
-DotExporter(arvore).to_picture("grafo.png")
+if not tem_erro_yacc:
+    DotExporter(arvore).to_picture("grafo.png")
 
 

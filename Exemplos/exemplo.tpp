@@ -1,5 +1,5 @@
-inteiro: m
-inteiro: n
+{inteiro: m
+inteiro: n}
 
 inteiro somaIntervaloNM (inteiro: m, inteiro: n)
     inteiro: soma
@@ -16,6 +16,7 @@ inteiro somaIntervaloNM (inteiro: m, inteiro: n)
 fim
 
 inteiro principal ()
+    inteiro: m, n
     leia(m)
     leia(n)
     escreva(somaIntervaloNM(m, n))

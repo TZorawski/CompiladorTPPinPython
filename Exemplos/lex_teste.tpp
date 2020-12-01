@@ -1,8 +1,9 @@
-inteiro principal()
-  inteiro: a,b
-  a:= 10 + 11
-  leia(a)
+$
 
-	retorna(0)
+inteiro principal()
+  inteiro: a
+  a:= 10 + 11
+
+	retorna(a)
 fim
 
