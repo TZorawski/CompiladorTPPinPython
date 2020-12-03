@@ -1,7 +1,7 @@
-{inteiro: m
-inteiro: n}
+inteiro: m
+flutuante: n
 
-inteiro somaIntervaloNM (inteiro: m, inteiro: n)
+{inteiro somaIntervaloNM (inteiro: m, inteiro: n)
     inteiro: soma
     se m < n então
         soma := m
@@ -16,9 +16,17 @@ inteiro somaIntervaloNM (inteiro: m, inteiro: n)
 fim
 
 inteiro principal ()
-    inteiro: m, n
+    {inteiro: m, n}
     leia(m)
     leia(n)
     escreva(somaIntervaloNM(m, n))
 		retorna(0)
+fim}
+
+inteiro principal ()
+    {inteiro: m, n}
+    m:= 2
+    n:= 6 + m
+    retorna(0)
 fim
+

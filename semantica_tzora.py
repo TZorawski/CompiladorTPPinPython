@@ -19,8 +19,7 @@ arrumar atribuição por leia
 lista_mensagens = []
 # Guarda escopo percorrido no momento
 escopo = "global"
-# Guarda 0 quando não há erros e -1 quando há erros
-tem_erros = [0]
+
 
 # ==========================
 # === Funções Auxiliares ===
@@ -275,7 +274,7 @@ def varre_semantica():
 
 # Chama varedura
 if not tem_erro_yacc:
-	tem_erros[0] = varre_semantica()
+	has_erros = varre_semantica()
 
 # Poda árvore
 poda.poda_arvore(arvore)

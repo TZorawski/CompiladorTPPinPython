@@ -18,12 +18,8 @@ def estaNaLista(x, lista):
     # Retorna True se a string "x" está presente em algum item da lista de strings "lista"
     esta = False
     x = x.split('/')[0]
-    #if (lista == ['corpo', 'lista_parametros', 'lista_argumentos', 'lista_variaveis']):
-    #    print(x)
     for item in lista:
         if (x == item):
-            #if (lista == ['corpo', 'lista_parametros', 'lista_argumentos', 'lista_variaveis']):
-            #    print(x + '=' + item)
             esta = True
             break
     return esta
@@ -31,7 +27,6 @@ def estaNaLista(x, lista):
 # ----- Poda -----
 
 def poda_arvore(arvore):
-    #print("nome: " + arvore.name)
     for no in arvore.children:
         poda_arvore(no)
 
@@ -48,10 +43,8 @@ def poda_arvore(arvore):
         erased_node(arvore)
         
     elif(estaNaLista(arvore.name, ['corpo', 'lista_parametros', 'lista_argumentos', 'lista_variaveis'])):
-        #print('ppai' + arvore.parent.name.split('/')[0] + ':' + arvore.name.split('/')[0])
         if(arvore.parent.name.split('/')[0] == arvore.name.split('/')[0]):
-            print("nome: " + arvore.name)
-            print("prune_one_node lista")
+            #print("prune_one_node lista")
             prune_one_node(arvore)
 
 # ----- Prunning Functions -----

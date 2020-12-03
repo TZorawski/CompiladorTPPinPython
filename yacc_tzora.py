@@ -594,7 +594,7 @@ data = arq.read()
 result = parser.parse(data, tracking=True)
 #print(result)
 
-# Gera grafo
+# Gera imagem grafo
 if not tem_erro_yacc:
     #DotExporter(arvore).to_dotfile("tree.dot")
     DotExporter(arvore).to_picture("arvore.png")
