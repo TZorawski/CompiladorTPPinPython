@@ -2,6 +2,8 @@ from anytree import Node, RenderTree
 from anytree.exporter import DotExporter
 
 from yacc_tzora import arvore, tabela, tem_erro_yacc
+import poda_arvore_tzora as poda
+
 """
 tratar tipo indice vetor e intervalo
 tratar tipo coersao atribuição
@@ -273,5 +275,11 @@ if not tem_erro_yacc:
 #if (has_erros != -1):
 #	for i in lista_mensagens:
 #		print(i)
+
+# Poda árvore
+poda.poda_arvore(arvore)
+#DotExporter(arvore).to_dotfile("arvore_podada.dot")
+DotExporter(arvore).to_picture("arvore_podada.png")
+#print("Para ver a imagem do grafo em PNG rode \"  dot -Tpng -O arvore_podada.dot \".")
 
 

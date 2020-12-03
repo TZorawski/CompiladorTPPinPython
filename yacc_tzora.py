@@ -99,7 +99,7 @@ def p_var (p):
     if (len(p) == 2):
         # --- cria o atributo "tipo" no nó de valor de "var", o qual será utilizado para guardar o tipo da variável
         noValor = Node(p[1]+"/"+str(count), valor=[p[1]], tipo=[""])
-        p[0] = Node("var " + p[1] + "/" + str(count), children=[noValor])
+        p[0] = Node("var/" + str(count), children=[noValor])
     elif (len(p) == 3):
         noValor = Node(p[1]+"/"+str(count), valor=[p[1]], tipo=[""])
         p[0] = Node("var/" + str(count), children=[noValor, p[2]])
@@ -489,8 +489,7 @@ def p_numero (p):
     global count
     count += 1
     noValor = Node(p[1]+"/"+str(count), valor=[p[1]], tipo=["numero"])
-    p[0] = Node("numero "+p[1]+" /"+str(count), children=[noValor])
-		#p[0] = Node(str(p[1]))
+    p[0] = Node("numero/"+str(count), children=[noValor])
 
 def p_chamada_funcao (p):
     '''chamada_funcao : ID EPAREN lista_argumentos DPAREN
@@ -597,6 +596,8 @@ result = parser.parse(data, tracking=True)
 
 # Gera grafo
 if not tem_erro_yacc:
-    DotExporter(arvore).to_picture("grafo.png")
+    #DotExporter(arvore).to_dotfile("tree.dot")
+    DotExporter(arvore).to_picture("arvore.png")
+    #print("Para ver a imagem do grafo em PNG rode \"  dot -Tpng -O tree.dot \".")
 
 
