@@ -198,7 +198,7 @@ def p_cabecalho (p):
     '''
     global count
     count += 1
-    noValor = Node("nome " + p[1] + " /" + str(count), valor=[p[1]])
+    noValor = Node("nomeFuncao/" + p[1] + " /" + str(count), valor=[p[1]])
     p[0] = Node("cabecalho/" + str(count), children=[noValor, p[3], p[5]])
 
     #insere escopo vas variaveis do corpo

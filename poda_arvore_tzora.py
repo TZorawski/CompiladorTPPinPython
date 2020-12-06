@@ -31,8 +31,8 @@ def poda_arvore(arvore):
         poda_arvore(no)
 
     if(estaNaLista(arvore.name, OPERATIONS)):
-        #print("prune_especial")
-        prune_especial(arvore)
+        #print("poda_operadores")
+        poda_operadores(arvore)
 
     if(estaNaLista(arvore.name, NOS_SIMPLES)):
         #print("prune_one_node no simples")
@@ -47,17 +47,32 @@ def poda_arvore(arvore):
             #print("prune_one_node lista")
             prune_one_node(arvore)
 
+    if(estaNaLista(arvore.name, ['cabecalho'])):
+        poda_cabecalho_func(arvore)
+
 # ----- Prunning Functions -----
-def prune_especial(tree):
+# Poda nó de operadores
+def poda_operadores(arvore):
     aux = []
 
-    if(estaNaLista(tree.parent.name, ["operador_soma", "operador_multiplicacao"])):
-        prune_one_node(tree.parent)
+    if(estaNaLista(arvore.parent.name, ["operador_soma", "operador_multiplicacao"])):
+        prune_one_node(arvore.parent)
 
-    dad = tree.parent
+    dad = arvore.parent
     aux = [dad.children[0], dad.children[2]] 
-    tree.children = aux
-    dad.children = [tree]
+    arvore.children = aux
+    dad.children = [arvore]
+
+# Poda nó de cabeçalho de funções
+def poda_cabecalho_func(arvore):
+    aux = []
+
+    dad = arvore.parent
+    filhos_nome = [arvore.children[1], arvore.children[2]]
+    no_nome = arvore.children[0]
+    no_nome.children = filhos_nome # Nó de nome da função vira pai
+    filhos_dad = [dad.children[0], no_nome] 
+    dad.children = filhos_dad
     
 def prune_one_node(tree):
     aux = []
