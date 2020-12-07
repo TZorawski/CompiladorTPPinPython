@@ -577,6 +577,11 @@ Explicação de cada campo:
 - Dimensão: guarda a dimensão das variáveis. Por exemplo, vetores tem dimensão 1, matrizes tem dimensão 2.
 - Tamanho: guarda o tamanho (quantidade de elementos) de cada dimensão da variável. Caso a variável tenha dimensão 0, o tamanho também será 0.
 - Escopo: guarda o escopo de cada variável. Esse campo pode assumir o valor "global" ou, se a variável for local, assumirá o nome da função em que a variável foi declarada.
+- Inicializado: usado apenas para o token VARIAVEL. Assume o valor de zero se a variável ainda não foi inicializada e de um caso contrário.
+- Utilizado: usado apenas para o token VARIAVEL. Assume o valor de zero se a variável ainda não foi utilizada e de um caso contrário.
+- Variáveis: usado apenas para o token FUNCAO. Guarda uma matriz que armazena os parâmetros da função. A primeira linha é a lista dos tipos dos parâmetros e a segunda linha é a lista dos nomes dos parâmetros, posicionados em ordem de aparecimento.
+- Linha: armazena a linha em que o elemento se encontra no código.
+- Coluna: armazena a coluna em que o elemento se encontra no código.
 """
 tabela = [["token", "lexema", "tipo", "dimensão", "tamanho", "escopo", "inicializado", "utilizado", "variaveis", "lin", "col"]]
 variaveis = [] # Guarda índice das variáveis já declaradas na tabela para definição do escopo

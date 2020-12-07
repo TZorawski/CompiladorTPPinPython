@@ -17,7 +17,10 @@ NOS_SIMPLES = [
 def estaNaLista(x, lista):
     # Retorna True se a string "x" está presente em algum item da lista de strings "lista"
     esta = False
-    x = x.split('/')[0]
+    if ("//" in x):
+        x = '/'
+    else:
+        x = x.split('/')[0]
     for item in lista:
         if (x == item):
             esta = True

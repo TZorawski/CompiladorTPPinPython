@@ -181,6 +181,11 @@ def percorreArvore(no_atual):
 		# Percorre fatores da atribuição
 		folhas = no_atual.children[1].leaves
 		for j in folhas:
+			if ("numero" in j.parent.name): # Atribui tipo aos números
+				if (j.valor[0].isdigit()):
+					j.tipo = ["inteiro"]
+				else:
+					j.tipo = ["flutuante"]
 			pos = getLinha("VARIAVEL", 1, j.valor[0], escopo)
 			if ( pos != -1):
 				tabela[pos][7] = 1 # Registra que a variável foi utilizada
@@ -281,5 +286,4 @@ poda.poda_arvore(arvore)
 #DotExporter(arvore).to_dotfile("arvore_podada.dot")
 DotExporter(arvore).to_picture("arvore_podada.png")
 #print("Para ver a imagem do grafo em PNG rode \"  dot -Tpng -O arvore_podada.dot \".")
-
 
