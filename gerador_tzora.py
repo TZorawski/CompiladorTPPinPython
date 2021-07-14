@@ -237,7 +237,7 @@ def declara_funcoes(arvore):
 
         # ----------- Percorre corpo da função -----------
         # ........... ATRIBUICAO ...........
-        if (retornaNomeFormatado(no_filho.name) == "atribuicao"):
+        if (retornaNomeFormatado(no_filho.name) == "atribuicao" or retornaNomeFormatado(no_filho.name) == "leia"):
             print("164atrib")
             # Guarda a variável que vai receber a atribuição
             var_de_recebimento = None
@@ -252,62 +252,104 @@ def declara_funcoes(arvore):
                     tipo_var_de_recebimento = v[1]
                     break
 
-            # --- Encontra elemento a ser recebido ---
-            no_recebido = no_filho.children[1]
-            if (retornaNomeFormatado(no_recebido.name) == "chamada_funcao"):
-                var_retorno = solve_func_call(no_recebido, builder, escopo)
-                builder.store(var_retorno, var_de_recebimento)
-                
-            elif (retornaNomeFormatado(no_recebido.name) == "numero"):
-                print("210numero")
-                # Cria uma constante pra armazenar o número
-                num = None
-                if (no_recebido.children[0].tipo[0] == "inteiro"):
-                    num = ir.Constant(ir.IntType(32), int(no_recebido.children[0].valor[0]))
-                    tipo_var_recebido = "inteiro"
-                elif (no_recebido.children[0].tipo[0] == "flutuante"):
-                    num = ir.Constant(ir.FloatType(), float(no_recebido.children[0].valor[0]))
-                    tipo_var_recebido = "flutuante"
-                
-                # Armazena o número na variavel
-                builder.store(num, var_de_recebimento)
-                
-            elif (retornaNomeFormatado(no_recebido.name) == "var"):
-                print("210var")
-                # --- Encontra variável a ser recebida ---
-                # Guarda a variável que vai ser recebida
-                var_recebida = None
+            if(retornaNomeFormatado(no_filho.name) == "leia" and len(no_filho.children) > 0):
+                if(retornaNomeFormatado(no_filho.children[0].name) == "var"):
+                    if (tipo_var_de_recebimento == "inteiro"):
+                        ret = builder.call(leiaInteiro, [])
+                        builder.store(ret, var_de_recebimento)
+                    else:
+                        ret = builder.call(leiaFlutuante, [])
+                        builder.store(ret, var_de_recebimento)
+            else:
+
+                # --- Encontra elemento a ser recebido ---
+                no_recebido = no_filho.children[1]
+                if (retornaNomeFormatado(no_recebido.name) == "chamada_funcao"):
+                    var_retorno = solve_func_call(no_recebido, builder, escopo)
+                    builder.store(var_retorno, var_de_recebimento)
+                 
+                elif (retornaNomeFormatado(no_recebido.name) == "numero"):
+                    print("210numero")
+                    # Cria uma constante pra armazenar o número
+                    num = None
+                    if (no_recebido.children[0].tipo[0] == "inteiro"):
+                        num = ir.Constant(ir.IntType(32), int(no_recebido.children[0].valor[0]))
+                        tipo_var_recebido = "inteiro"
+                    elif (no_recebido.children[0].tipo[0] == "flutuante"):
+                        num = ir.Constant(ir.FloatType(), float(no_recebido.children[0].valor[0]))
+                        tipo_var_recebido = "flutuante"
+                    
+                    # Armazena o número na variavel
+                    builder.store(num, var_de_recebimento)
+                    
+                elif (retornaNomeFormatado(no_recebido.name) == "var"):
+                    print("210var")
+                    # --- Encontra variável a ser recebida ---
+                    # Guarda a variável que vai ser recebida
+                    var_recebida = None
+                    # Nome da variável no nó
+                    nome_var_no = no_recebido.children[0].valor[0]
+                    for v in (lista_variaveis[escopo] + lista_variaveis["global"]):
+                        if (v[0].name == retornaNomeFormatado(nome_var_no)):
+                            var_recebida = v[0]
+                            tipo_var_recebido = v[1]
+                            break
+                    # Armazena var a ser recebida em temporário
+                    temp = builder.load(var_recebida,"")
+                    # Armazena valor na variável de recebimento
+                    builder.store(temp, var_de_recebimento)
+                else:
+                    
+                    # Armazena valor a ser recebido em temporário
+                    aux = gera_operacao_matematica(no_recebido, builder, escopo)
+                    tipo_var_recebido = aux[1]
+                    temp = None
+                    if (aux[1] == "inteiro" and tipo_var_de_recebimento == "flutuante"):
+                        aux[0] = builder.sitofp(aux[0], ir.FloatType())
+                    elif (aux[1] == "flutuante" and tipo_var_de_recebimento == "inteiro"):
+                        aux[0] = builder.fptosi(aux[0], ir.IntType(32))
+
+                    # Armazena var a ser recebida em temporário
+                    temp = builder.load(aux[0],"")
+                    # Armazena valor na variável de recebimento
+                    builder.store(temp, var_de_recebimento)
+                    
+                    # Armazena valor na variável de recebimento
+                    #builder.store(temp, var_de_recebimento)
+                    #ero32 = ir.Constant(ir.IntType(32), 0) 
+                    #builder.store(ero32, var_de_recebimento)
+
+        # ........... ESCREVA ...........
+        if(retornaNomeFormatado(no_filho.name) == "escreva" and len(no_filho.children) > 0):
+            var_escrita = None
+            tipo_var_escrita = "inteiro"
+            if(retornaNomeFormatado(no_filho.children[0].name) == "var"):
                 # Nome da variável no nó
-                nome_var_no = no_recebido.children[0].valor[0]
+                nome_var_no = no_filho.children[0].children[0].valor[0]
+                # Encontra variável que vai receber a atribuição
                 for v in (lista_variaveis[escopo] + lista_variaveis["global"]):
                     if (v[0].name == retornaNomeFormatado(nome_var_no)):
-                        var_recebida = v[0]
-                        tipo_var_recebido = v[1]
+                        var_escrita = v[0]
+                        tipo_var_escrita = v[1]
                         break
-                # Armazena var a ser recebida em temporário
-                temp = builder.load(var_recebida,"")
-                # Armazena valor na variável de recebimento
-                builder.store(temp, var_de_recebimento)
-            else:
-                
-                # Armazena valor a ser recebido em temporário
-                aux = gera_operacao_matematica(no_recebido, builder, escopo)
-                tipo_var_recebido = aux[1]
-                temp = None
-                if (aux[1] == "inteiro" and tipo_var_de_recebimento == "flutuante"):
-                    aux[0] = builder.sitofp(aux[0], ir.FloatType())
-                elif (aux[1] == "flutuante" and tipo_var_de_recebimento == "inteiro"):
-                    aux[0] = builder.fptosi(aux[0], ir.IntType(32))
 
-                # Armazena var a ser recebida em temporário
-                temp = builder.load(aux[0],"")
-                # Armazena valor na variável de recebimento
-                builder.store(temp, var_de_recebimento)
-                
-                # Armazena valor na variável de recebimento
-                #builder.store(temp, var_de_recebimento)
-                #ero32 = ir.Constant(ir.IntType(32), 0) 
-                #builder.store(ero32, var_de_recebimento)
+                if (tipo_var_escrita == "inteiro"):
+                    var = builder.load(var_escrita, name='write_var', align=4)
+                    builder.call(escrevaInteiro, [var])
+                else:
+                    var = builder.load(var_escrita, name='write_var', align=4)
+                    builder.call(escrevaFlutuante, [var])
+
+            
+            elif(retornaNomeFormatado(no_filho.children[0].name) == "numero"):
+                if(no_filho.children[0].children[0].name.isdigit()):
+                    var = ir.Constant(ir.IntType(32), int(no_filho.children[0].children[0].valor[0]))
+                    
+                    builder.call(escrevaInteiro, [var])
+
+                else:
+                    var = ir.Constant(ir.FloatType(), float(no_filho.children[0].children[0].valor[0]))
+                    builder.call(escrevaFlutuante, [var]) 
 
         # ........... RETORNA ...........
         if ( i == (len(corpo.children) - 1) ):

@@ -166,6 +166,13 @@ def percorreArvore(no_atual):
 						lista_mensagens.append(mensagem)
 						print(mensagem)
 
+	# Trata leituras
+	if ("leia/" in no_atual.name):
+		var = no_atual.children[0].children[0].valor[0]
+		# Registra que a variável foi inicializada
+		pos = getLinha("VARIAVEL", 1, var, escopo)
+		tabela[pos][6] = 1
+		
 	# Trata atribuições
 	if ("atribuicao/" in no_atual.name):
 		var = no_atual.children[0].children[0].valor[0]

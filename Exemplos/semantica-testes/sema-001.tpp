@@ -5,3 +5,6 @@
 inteiro: a
 flutuante: b
 
+inteiro principal()
+   retorna(0)
+fim
